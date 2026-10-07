@@ -1,0 +1,20 @@
+spec: open-company/v0
+id: munk-mind
+title: Munk Mind
+lifecycle: live
+source:
+  git: https://github.com/owner/munk-mind
+  commit: 3f2c1a9
+  branch: main
+requires:
+  secrets:
+    - apple-asc
+  logins:
+    - feishu
+groups:
+  - id: acquire
+    title: 获客
+projects:
+  - id: feedback
+    title: 用户反馈
+    group: acquire

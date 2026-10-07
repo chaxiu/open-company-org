@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "spec": {
+      "type": "string",
+      "const": "open-company/v0",
+      "description": "Must be open-company/v0. This generation is experimental."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,47}$",
+      "description": "Product id. Must equal the directory name under products/. Pattern ^[a-z][a-z0-9-]{0,47}$."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Product title."
+    },
+    "lifecycle": {
+      "type": "string",
+      "enum": [
+        "explore",
+        "live",
+        "maintain",
+        "frozen"
+      ],
+      "description": "explore, live, maintain, or frozen. May be changed at import."
+    },
+    "source": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "git": {
+              "type": "string",
+              "format": "uri",
+              "description": "Repository URL. The importer checks out commit."
+            },
+            "commit": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{7,64}$",
+              "description": "Hex SHA, 7–64 characters, case-insensitive. Revision to check out."
+            },
+            "branch": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Branch name. Non-empty after trimming."
+            }
+          },
+          "required": [
+            "git",
+            "commit",
+            "branch"
+          ],
+          "additionalProperties": false,
+          "patternProperties": {
+            "^x-[A-Za-z0-9][A-Za-z0-9-]*$": true
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "./code",
+              "description": "Snapshot directory, relative to this Productfile. Must be ./code."
+            },
+            "commit": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{7,64}$",
+              "description": "Hex SHA of the snapshot's origin commit. Provenance only; not a checkout target."
+            },
+            "branch": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Branch name for the new repository created on import."
+            }
+          },
+          "required": [
+            "path",
+            "commit",
+            "branch"
+          ],
+          "additionalProperties": false,
+          "patternProperties": {
+            "^x-[A-Za-z0-9][A-Za-z0-9-]*$": true
+          }
+        }
+      ],
+      "description": "Exactly one of git or path. A local checkout is not a third form."
+    },
+    "requires": {
+      "description": "Names the importer must prepare. Omit when empty.",
+      "type": "object",
+      "properties": {
+        "secrets": {
+          "description": "Secret names the importer must prepare. Names only, never values.",
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "logins": {
+          "description": "Platform names a person logs into on their own machine. Names only.",
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[A-Za-z0-9][A-Za-z0-9-]*$": true
+      }
+    },
+    "groups": {
+      "description": "Groups in list order. Omit when empty.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$",
+            "description": "Group id. Lowercase kebab, 1–48 characters."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Group title."
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "additionalProperties": false,
+        "patternProperties": {
+          "^x-[A-Za-z0-9][A-Za-z0-9-]*$": true
+        }
+      }
+    },
+    "projects": {
+      "description": "Projects. Tasks are not listed here. Omit when empty.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$",
+            "description": "Project id. Lowercase kebab, 1–48 characters."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Project title."
+          },
+          "group": {
+            "description": "Optional group id from groups in the same Productfile.",
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "additionalProperties": false,
+        "patternProperties": {
+          "^x-[A-Za-z0-9][A-Za-z0-9-]*$": true
+        }
+      }
+    }
+  },
+  "required": [
+    "spec",
+    "id",
+    "title",
+    "lifecycle",
+    "source"
+  ],
+  "additionalProperties": false,
+  "patternProperties": {
+    "^x-[A-Za-z0-9][A-Za-z0-9-]*$": true
+  },
+  "$id": "https://open-company.org/schema/v0/productfile.json",
+  "$comment": "Generated with zod v4 z.toJSONSchema from the field constraints of productfileSchema. The exported schema wraps objects in a transform so vendor keys matching ^x-[A-Za-z0-9][A-Za-z0-9-]*$ are accepted and other unknown keys are rejected; JSON Schema cannot represent that transform, so those keys are patternProperties on each object. Hex commit patterns are case-insensitive in the source schema; toJSONSchema dropped the i flag, so the class is expanded to [0-9a-fA-F]. open-company/v0 is experimental and matches the Productfile.yaml fields in Open Company spec v0. This version URL is immutable."
+}

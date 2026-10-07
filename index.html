@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" data-lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Open Company 规范 · open-company/v0</title>
+  <meta name="description" content="Open Company spec v0 (experimental): the company package, Companyfile.yaml, and Productfile.yaml. 开放公司规范：一家公司包长什么样。">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230969da'/%3E%3Cpath d='M8 11h16M8 16h16M8 21h10' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem("open-company-lang"); } catch (e) {}
+      var lang = saved === "en" || saved === "zh"
+        ? saved
+        : (navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en";
+      document.documentElement.dataset.lang = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">
+    <span class="zh">跳到正文</span>
+    <span class="en">Skip to content</span>
+  </a>
+
+  <div class="banner">
+    <div class="container">
+      <p class="zh">open-company/v0 是实验版。等 2–3 家外部公司真的跑过，再发布 v1。v0 的 Schema 地址保持不变。</p>
+      <p class="en">open-company/v0 is experimental. v1 waits until two or three outside companies have actually run on it. The v0 schema URLs stay as they are.</p>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="wordmark" href="#top">Open Company</a>
+      <nav class="site-nav" aria-label="Sections">
+        <a href="#principles"><span class="zh">原理</span><span class="en">Principles</span></a>
+        <a href="#layout"><span class="zh">目录</span><span class="en">Layout</span></a>
+        <a href="#declarations"><span class="zh">声明</span><span class="en">Declarations</span></a>
+        <a href="#import"><span class="zh">导入</span><span class="en">Import</span></a>
+        <a href="#schema">Schema</a>
+      </nav>
+      <div class="header-tools">
+        <div class="header-links">
+          <a href="https://opencompany.run"><span class="zh">官方模板</span><span class="en">Templates</span></a>
+          <a href="https://munk.sh"><span class="zh">用 Munk AI 运行</span><span class="en">Run with Munk AI</span></a>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" data-set-lang="zh" aria-pressed="true">中文</button>
+          <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container hero" id="top">
+      <p class="eyebrow">Spec · open-company/v0</p>
+      <h1>Open Company</h1>
+      <p class="lede zh">一家可以 Fork 的公司，由 Agent 运营。这一站只回答一个问题：一家公司包长什么样。读完可以写出一份通过 Schema 校验的 <code>Companyfile.yaml</code>。</p>
+      <p class="lede en">A company you can fork, run by agents. This site answers one question: what a company package looks like. From this page you can write a <code>Companyfile.yaml</code> that validates against the schema.</p>
+    </div>
+
+    <section id="principles">
+      <div class="container">
+        <h2><span class="zh">三条原理</span><span class="en">Three principles</span></h2>
+        <div class="principles">
+          <article class="principle">
+            <span class="index">01</span>
+            <h3>
+              <span class="zh">一家公司就是一个仓库。</span>
+              <span class="en">A company is a repository.</span>
+            </h3>
+            <p class="zh">公司的做法写成文件：约定、产品声明、运营与发版的剧本、专员、Skill。一个人加上一条产品，就是最小的一家公司。v0 把这个目录放在 GitHub 仓库或本机文件夹里。</p>
+            <p class="en">The company's practice is files: agreements, product declarations, operating and release playbooks, agents, and skills. One person and one product are already a company. In v0 that directory lives in a GitHub repository or a local folder.</p>
+          </article>
+          <article class="principle">
+            <span class="index">02</span>
+            <h3>
+              <span class="zh">运行时把它跑起来，人在路口拍板。</span>
+              <span class="en">A runtime runs it; a person decides at the intersections.</span>
+            </h3>
+            <p class="zh">运行时执行这份目录。人在路口拍板：导入先给出预览，确认之后才写入；声明里的日程在导入后关着，由人打开。</p>
+            <p class="en">A runtime executes the directory. A person decides at the intersections: import shows a preview and writes only after confirmation, and declared schedules stay off until a person turns them on.</p>
+          </article>
+          <article class="principle">
+            <span class="index">03</span>
+            <h3>
+              <span class="zh">Fork 了就是你的。它带走的是做法，不是实例数据，也不是密钥。</span>
+              <span class="en">A fork is yours. It carries the practice, not the data or secrets.</span>
+            </h3>
+            <p class="zh">导入就是 Fork。之后这家公司是你的，不跟上游同步。包里是做法。密钥的值、实例记录和本机路径留在原地。</p>
+            <p class="en">Import is the fork. Afterwards the company is yours, with no sync to upstream. The package carries the practice. Secret values, instance records, and machine-local paths stay behind.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="layout">
+      <div class="container">
+        <h2><span class="zh">目录</span><span class="en">Directory</span></h2>
+        <p class="section-kicker zh">公司包是一个目录。导出时不带 <code>.git</code>。产品、专员和 Skill 靠路径发现，<code>Companyfile.yaml</code> 里不再列一遍。</p>
+        <p class="section-kicker en">A company package is a directory. An export has no <code>.git</code> directory. Products, agents, and skills are discovered by path. <code>Companyfile.yaml</code> does not list them again.</p>
+        <div class="panel" tabindex="0">
+          <pre><code>my-company/
+  Companyfile.yaml
+  AGENTS.md
+  LICENSE
+  skills/{id}/SKILL.md
+  agents/{id}.md
+  projects/{id}/
+  products/{id}/
+    Productfile.yaml
+    AGENTS.md
+    goal.md
+    code/
+    projects/{id}/
+      README.md
+      tasks/{id}.md
+      .opencode/</code></pre>
+        </div>
+        <ul class="notes">
+          <li><code>Companyfile.yaml</code> — <span class="zh">公司声明。字段见下一节。</span><span class="en">The company declaration. Fields are in the next section.</span></li>
+          <li><code>AGENTS.md</code> — <span class="zh">公司约定。有才放。</span><span class="en">Company agreements. Include the file when you have them.</span></li>
+          <li><code>LICENSE</code> — <span class="zh">作者自选。运行时不解析，导出也不替你生成。</span><span class="en">The author's choice. A runtime does not parse it, and export does not invent one.</span></li>
+          <li><code>skills/{id}/SKILL.md</code> — <span class="zh">公司级 Skill。一个 id 一个目录。</span><span class="en">Company skills. One directory per id.</span></li>
+          <li><code>agents/{id}.md</code> — <span class="zh">公司级专员。Markdown，元数据放在文首。</span><span class="en">Company agents. Markdown, with metadata in frontmatter.</span></li>
+          <li><code>projects/{id}/</code> <span class="zh">（公司根下）</span><span class="en">(at the company root)</span> — <span class="zh">v0 只预留这个位置。导入时警告并跳过，导出不写出。</span><span class="en">Reserved in v0. Import warns and skips it. Export does not write it.</span></li>
+          <li><code>products/{id}/Productfile.yaml</code> — <span class="zh">一条产品一份声明。<code>id</code> 等于目录名 <code>{id}</code>。</span><span class="en">One declaration per product. <code>id</code> equals the directory name <code>{id}</code>.</span></li>
+          <li><code>products/{id}/AGENTS.md</code> — <span class="zh">产品约定。有才放。</span><span class="en">Product agreements, when you have them.</span></li>
+          <li><code>goal.md</code> — <span class="zh">可选。模板默认不带。</span><span class="en">Optional. Templates leave it out by default.</span></li>
+          <li><code>code/</code> — <span class="zh">只在 <code>source.path</code> 时出现。源码快照，不含 <code>.git</code>。</span><span class="en">Present only for <code>source.path</code>. A source snapshot, with no <code>.git</code>.</span></li>
+          <li><code>products/{id}/projects/{id}/</code> — <span class="zh"><code>README.md</code> 是项目说明书。<code>tasks/{id}.md</code> 一条任务一个文件，不写进 <code>Productfile.yaml</code>。</span><span class="en"><code>README.md</code> is the project brief. <code>tasks/{id}.md</code> is one task per file, and tasks are not fields of <code>Productfile.yaml</code>.</span></li>
+          <li><code>.opencode/</code> — <span class="zh">可选。按它自己的约定原样保留。规范不解析它，其中不能有密钥。</span><span class="en">Optional. Kept as its own convention. The spec does not parse it, and it must not contain secrets.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="declarations">
+      <div class="container">
+        <h2><span class="zh">两份声明</span><span class="en">Two declarations</span></h2>
+        <p class="section-kicker zh"><code>Companyfile.yaml</code> 描述这家公司。每个 <code>products/{id}/Productfile.yaml</code> 描述一条产品。两份都是 YAML，<code>spec</code> 都写成 <code>open-company/v0</code>。空列表和关着的开关不写出来。不认识的键，除了 <code>x-*</code>，都会使文件不合法。</p>
+        <p class="section-kicker en"><code>Companyfile.yaml</code> describes the company. Each <code>products/{id}/Productfile.yaml</code> describes one product. Both are YAML, and both set <code>spec</code> to <code>open-company/v0</code>. Omit empty lists and switches that are off. Any unknown key other than <code>x-*</code> makes the file invalid.</p>
+
+        <h3 id="companyfile">Companyfile.yaml</h3>
+        <p class="field-note zh">公司声明。产品、专员、Skill 都在目录里，不在这个文件里列清单。</p>
+        <p class="field-note en">The company declaration. Products, agents, and skills live in the directory, not as a list in this file.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="zh">字段</span><span class="en">Field</span></th>
+                <th><span class="zh">何时要写</span><span class="en">When required</span></th>
+                <th><span class="zh">规则</span><span class="en">Rule</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>spec</code></td>
+                <td><span class="zh">必写</span><span class="en">Always</span></td>
+                <td><code>open-company/v0</code></td>
+              </tr>
+              <tr>
+                <td><code>id</code></td>
+                <td><span class="zh">写出时要带。读旧包时可以没有。</span><span class="en">Include it when writing. Older packages may omit it.</span></td>
+                <td><span class="zh">UUID。它标出这份包是从哪一家公司写出来的。改 <code>name</code> 不改 <code>id</code>。导入不把它变成导入方自己的 id；再次导入时用它认出同一个包。</span><span class="en">A UUID. It identifies the company that wrote the package. Renaming does not change it. Import keeps the importer's own id and uses this value to recognize the same package later.</span></td>
+              </tr>
+              <tr>
+                <td><code>name</code></td>
+                <td><span class="zh">必写</span><span class="en">Always</span></td>
+                <td><span class="zh">显示名。去掉首尾空白后 1–200 个字符，可以有空格，可以用任何文字。它不是查找键。</span><span class="en">Display name. After trimming whitespace, 1–200 characters. Spaces and any language are allowed. It is not a lookup key.</span></td>
+              </tr>
+              <tr>
+                <td><code>description</code></td>
+                <td><span class="zh">可选</span><span class="en">Optional</span></td>
+                <td><span class="zh">一句话。写了就不能是空白。</span><span class="en">One line. If present, it is non-empty after trimming.</span></td>
+              </tr>
+              <tr>
+                <td><code>homepage</code></td>
+                <td><span class="zh">可选</span><span class="en">Optional</span></td>
+                <td><span class="zh">一个 URL。</span><span class="en">A URL.</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="field-note zh">最小的一份合法文件只需要 <code>spec</code> 和 <code>name</code>。新写的包带上 <code>id</code>。</p>
+        <p class="field-note en">The smallest valid file has <code>spec</code> and <code>name</code>. A newly written package includes <code>id</code>.</p>
+
+        <div class="file-block">
+          <div class="file-label">
+            <span>Companyfile.yaml</span>
+            <a href="examples/acme/Companyfile.yaml"><span class="zh">示例文件</span><span class="en">Example file</span></a>
+          </div>
+          <pre class="code"><code>spec: open-company/v0
+id: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+name: Acme Labs
+description: 一句话说明这家公司做什么
+homepage: https://acme.example</code></pre>
+        </div>
+
+        <h3 id="productfile">Productfile.yaml</h3>
+        <p class="field-note zh">产品声明，放在 <code>products/{id}/Productfile.yaml</code>。<code>id</code> 与目录名相同。任务在 <code>projects/{id}/tasks/</code> 里，不在这个文件里。</p>
+        <p class="field-note en">The product declaration, at <code>products/{id}/Productfile.yaml</code>. <code>id</code> matches that directory name. Tasks live under <code>projects/{id}/tasks/</code>, not in this file.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="zh">字段</span><span class="en">Field</span></th>
+                <th><span class="zh">何时要写</span><span class="en">When required</span></th>
+                <th><span class="zh">规则</span><span class="en">Rule</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>spec</code></td>
+                <td><span class="zh">必写</span><span class="en">Always</span></td>
+                <td><code>open-company/v0</code></td>
+              </tr>
+              <tr>
+                <td><code>id</code></td>
+                <td><span class="zh">必写</span><span class="en">Always</span></td>
+                <td><span class="zh">等于所在目录名。小写 kebab：以字母开头，后面最多 47 个 <code>a-z</code>、<code>0-9</code> 或 <code>-</code>。正则 <code>^[a-z][a-z0-9-]{0,47}$</code>。</span><span class="en">Equals the directory name. Lowercase kebab: a letter, then up to 47 of <code>a-z</code>, <code>0-9</code>, or <code>-</code>. Pattern <code>^[a-z][a-z0-9-]{0,47}$</code>.</span></td>
+              </tr>
+              <tr>
+                <td><code>title</code></td>
+                <td><span class="zh">必写</span><span class="en">Always</span></td>
+                <td><span class="zh">显示标题。去掉首尾空白后不能为空。</span><span class="en">Display title. Non-empty after trimming.</span></td>
+              </tr>
+              <tr>
+                <td><code>lifecycle</code></td>
+                <td><span class="zh">必写</span><span class="en">Always</span></td>
+                <td><code>explore</code>、<code>live</code>、<code>maintain</code>、<code>frozen</code> <span class="zh">之一。导入时可以改。</span><span class="en">One of those four. It may be changed at import.</span></td>
+              </tr>
+              <tr>
+                <td><code>source</code></td>
+                <td><span class="zh">必写，二选一</span><span class="en">Always, one form</span></td>
+                <td><span class="zh">用键名区分，不另设 <code>type</code>。<code>git</code> 与 <code>path</code> 只能出现一个。没有第三种「本机路径」形态。</span><span class="en">The key name is the form. There is no <code>type</code> field. <code>git</code> and <code>path</code> are mutually exclusive. A machine-local path is not a third form.</span></td>
+              </tr>
+              <tr>
+                <td><code>source.git</code></td>
+                <td><span class="zh"><code>git</code> 形态必写</span><span class="en">Required for <code>git</code></span></td>
+                <td><span class="zh">仓库 URL。导入时 checkout 到 <code>commit</code>。这个提交要已经在该 GitHub 仓库上。</span><span class="en">Repository URL. Import checks out <code>commit</code>. That commit already exists on the GitHub repository.</span></td>
+              </tr>
+              <tr>
+                <td><code>source.path</code></td>
+                <td><span class="zh"><code>path</code> 形态必写</span><span class="en">Required for <code>path</code></span></td>
+                <td><span class="zh">固定为 <code>./code</code>，相对这份 <code>Productfile.yaml</code>。快照不含 <code>.git</code>。</span><span class="en">Exactly <code>./code</code>, relative to this Productfile. The snapshot has no <code>.git</code>.</span></td>
+              </tr>
+              <tr>
+                <td><code>source.commit</code></td>
+                <td><span class="zh">两种形态都必写</span><span class="en">Required in both forms</span></td>
+                <td><span class="zh">7–64 位十六进制 SHA，大小写都可以。<code>git</code> 形态是要 checkout 的修订。<code>path</code> 形态只说明快照取自哪次提交。</span><span class="en">A 7–64 character hex SHA, either case. For <code>git</code>, the revision to check out. For <code>path</code>, provenance of the snapshot only.</span></td>
+              </tr>
+              <tr>
+                <td><code>source.branch</code></td>
+                <td><span class="zh">两种形态都必写</span><span class="en">Required in both forms</span></td>
+                <td><span class="zh">非空分支名。<code>path</code> 形态导入后，新仓库从这条分支开始。</span><span class="en">A non-empty branch name. For <code>path</code>, the new repository starts on this branch.</span></td>
+              </tr>
+              <tr>
+                <td><code>requires</code></td>
+                <td><span class="zh">可选</span><span class="en">Optional</span></td>
+                <td><span class="zh">导入方要自己准备的东西，只写名字。没有就整段省略。</span><span class="en">What the importer prepares. Names only. Omit the object when there is nothing to name.</span></td>
+              </tr>
+              <tr>
+                <td><code>requires.secrets</code></td>
+                <td><span class="zh">可选</span><span class="en">Optional</span></td>
+                <td><span class="zh">密钥名。写了这个键，至少一项，每一项去掉空白后非空。不写值。</span><span class="en">Secret names. If the key is present, at least one item, each non-empty after trimming. Values stay out.</span></td>
+              </tr>
+              <tr>
+                <td><code>requires.logins</code></td>
+                <td><span class="zh">可选</span><span class="en">Optional</span></td>
+                <td><span class="zh">要人在自己机器上先登录的平台名。规则与 <code>secrets</code> 相同。运行时不为这些名字做平台适配。</span><span class="en">Platform names a person logs into on their own machine. Same list rule as <code>secrets</code>. A runtime does not add platform adapters for these names.</span></td>
+              </tr>
+              <tr>
+                <td><code>groups</code></td>
+                <td><span class="zh">可选</span><span class="en">Optional</span></td>
+                <td><span class="zh">列表顺序就是分组顺序。每一项有 <code>id</code>（同上的 kebab）和 <code>title</code>（非空）。没有就省略。</span><span class="en">List order is the group order. Each item has <code>id</code> (the same kebab pattern) and a non-empty <code>title</code>. Omit the key when there are none.</span></td>
+              </tr>
+              <tr>
+                <td><code>projects</code></td>
+                <td><span class="zh">可选</span><span class="en">Optional</span></td>
+                <td><span class="zh">每一项有 <code>id</code>、<code>title</code>，以及可选的 <code>group</code>（某个分组的 <code>id</code>）。任务不写在这里。</span><span class="en">Each item has <code>id</code>, <code>title</code>, and an optional <code>group</code> (a group <code>id</code>). Tasks are not listed here.</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="split" style="margin-top: 1rem">
+          <div class="file-block">
+            <div class="file-label"><span>source.git</span><a href="examples/acme/products/munk-mind/Productfile.yaml"><span class="zh">示例文件</span><span class="en">Example file</span></a></div>
+            <pre class="code"><code>spec: open-company/v0
+id: munk-mind
+title: Munk Mind
+lifecycle: live
+source:
+  git: https://github.com/owner/munk-mind
+  commit: 3f2c1a9
+  branch: main
+requires:
+  secrets: [apple-asc]
+  logins: [feishu]
+groups:
+  - id: acquire
+    title: 获客
+projects:
+  - id: feedback
+    title: 用户反馈
+    group: acquire</code></pre>
+          </div>
+          <div class="file-block">
+            <div class="file-label"><span>source.path</span></div>
+            <pre class="code"><code>spec: open-company/v0
+id: munk-mind
+title: Munk Mind
+lifecycle: live
+source:
+  path: ./code
+  commit: 3f2c1a9
+  branch: main</code></pre>
+          </div>
+        </div>
+        <p class="field-note zh"><code>products/munk-mind/code/</code> 只跟 <code>path</code> 这一份走。同一个 <code>source</code> 对象里只写 <code>git</code> 或 <code>path</code> 其中一种。Schema 检查形状。产品 <code>id</code> 与目录名一致，<code>group</code> 指向同文件里的分组，这两条由你按上面的规则对齐。</p>
+        <p class="field-note en"><code>products/munk-mind/code/</code> belongs with the <code>path</code> form. One <code>source</code> object carries either <code>git</code> or <code>path</code>. The schema checks shape. You keep the product <code>id</code> equal to the directory name, and point <code>group</code> at a group in the same file.</p>
+        <p class="field-note zh">任何对象都可以带 <code>x-</code> 加厂商名的键，例如 <code>x-example</code>。键名匹配 <code>^x-[A-Za-z0-9][A-Za-z0-9-]*$</code>。v0 读的时候留着它们，再写文件时不带回去。</p>
+        <p class="field-note en">Any object may carry a vendor key such as <code>x-example</code>. The name matches <code>^x-[A-Za-z0-9][A-Za-z0-9-]*$</code>. v0 keeps them when reading and leaves them out when writing the file again.</p>
+      </div>
+    </section>
+
+    <section id="import">
+      <div class="container">
+        <h2><span class="zh">如何导入</span><span class="en">How import works</span></h2>
+        <p class="section-kicker zh">导入的是上面这个目录。v0 的来源是本机目录，或一个 GitHub 仓库 URL（可以带 ref）。没有注册中心。</p>
+        <p class="section-kicker en">Import takes that directory. In v0 the source is a local directory, or a GitHub repository URL with an optional ref. There is no registry.</p>
+        <ol class="steps">
+          <li>
+            <span class="zh">把目录交给一个实现了这份规范的运行时。根上要有 <code>Companyfile.yaml</code>。产品在 <code>products/{id}/</code>。</span>
+            <span class="en">Give the directory to a runtime that implements this spec. The root contains <code>Companyfile.yaml</code>. Products are under <code>products/{id}/</code>.</span>
+          </li>
+          <li>
+            <span class="zh">运行时先给预览：将要加入的产品、项目、任务、专员和 Skill，以及要人补上的项（代码放在哪、密钥叫什么名字）。确认之前不写入。</span>
+            <span class="en">The runtime previews first: products, projects, tasks, agents, and skills it would add, plus what a person still supplies (where code goes, and the names of secrets). It writes nothing before confirmation.</span>
+          </li>
+          <li>
+            <span class="zh">人确认之后才写入。包里的 <code>id</code> 仍是写出这份包的那家公司的 uuid。导入方保持自己的 id，并用包里的 id 在下次导入时认出同一个包。</span>
+            <span class="en">A person confirms, and then it is written. The package <code>id</code> stays the uuid of the company that wrote it. The importer keeps its own id and uses the package id to recognize the same package on a later import.</span>
+          </li>
+          <li>
+            <span class="zh">导入之后就是导入方自己的公司。不记录上游地址，不提示有新版本，也不把改动送回上游。要公开这份目录，由人自己初始化 git 再推送。</span>
+            <span class="en">After import the company is the importer's. The import records no upstream URL, offers no update, and sends no changes back. Publishing the directory is a person's own git init and push.</span>
+          </li>
+          <li>
+            <span class="zh">任务文件里没有「开着」这个字段。导入后日程关着，由人之后打开。导入不开始工作。</span>
+            <span class="en">Task files have no on/off field. Schedules stay off after import until a person turns them on. Import does not start work.</span>
+          </li>
+        </ol>
+        <div class="split">
+          <article class="card">
+            <h3><code>source.git</code></h3>
+            <p class="zh">从 <code>git</code> 这个 URL checkout 到 <code>commit</code>，再从 <code>branch</code> 接着走。人可以把 URL 换成自己 Fork 的地址。v0 不替人创建那个 Fork。</p>
+            <p class="en">Check out <code>commit</code> from the <code>git</code> URL, then continue from <code>branch</code>. A person may substitute the URL of their own fork. v0 does not create that fork.</p>
+          </article>
+          <article class="card">
+            <h3><code>source.path</code></h3>
+            <p class="zh">把 <code>products/{id}/code/</code> 复制到人指定的位置，建成一个新仓库，起始分支是 <code>source.branch</code>。<code>commit</code> 只记录快照来自哪次提交。</p>
+            <p class="en">Copy <code>products/{id}/code/</code> to a place the person chooses and create a new repository whose first branch is <code>source.branch</code>. <code>commit</code> records which commit the snapshot came from.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="schema">
+      <div class="container">
+        <h2>JSON Schema</h2>
+        <p class="section-kicker zh">文件是 YAML。Schema 校验的是解析之后的对象，草案 2020-12。下面两个地址属于 v0，之后不改内容、不改路径。</p>
+        <p class="section-kicker en">The files are YAML. The schema validates the parsed object, draft 2020-12. These two v0 URLs keep their path and their meaning.</p>
+        <div class="schema-links">
+          <p><a href="schema/v0/companyfile.json">/schema/v0/companyfile.json</a></p>
+          <p><a href="schema/v0/productfile.json">/schema/v0/productfile.json</a></p>
+        </div>
+        <p class="field-note zh">它们由 <code>companyfileSchema</code> 与 <code>productfileSchema</code> 的字段约束，用 zod v4 的 <code>z.toJSONSchema</code> 生成。导出的 schema 用一层变换放行 <code>x-*</code>，JSON Schema 表达不了这层变换，所以每个对象用 <code>patternProperties</code> 放行同样的键，其余未知键拒绝。<code>commit</code> 在源 schema 里不区分大小写，生成结果把字符类写成 <code>[0-9a-fA-F]</code>。</p>
+        <p class="field-note en">They were generated with zod v4 <code>z.toJSONSchema</code> from the field constraints of <code>companyfileSchema</code> and <code>productfileSchema</code>. The exported schemas allow <code>x-*</code> through a transform JSON Schema cannot represent, so each object allows the same keys with <code>patternProperties</code> and rejects every other unknown key. <code>commit</code> is case-insensitive in the source schema; the generated pattern uses <code>[0-9a-fA-F]</code>.</p>
+        <p class="field-note zh">长度按去掉首尾空白之后计算。JSON Schema 的 <code>minLength</code> / <code>maxLength</code> 作用在原始字符串上，不会先裁空白。参考实现会先裁。另外，Schema 不检查产品 <code>id</code> 是否等于目录名，也不检查 <code>group</code> 是否指向同文件里的分组。</p>
+        <p class="field-note en">Length is measured after trimming. JSON Schema <code>minLength</code> / <code>maxLength</code> apply to the raw string and do not trim. The reference check trims first. The schema also does not check that a product <code>id</code> equals its directory name, or that <code>group</code> points at a group in the same file.</p>
+      </div>
+    </section>
+
+    <section id="elsewhere">
+      <div class="container">
+        <h2><span class="zh">相关站点</span><span class="en">Related sites</span></h2>
+        <div class="elsewhere">
+          <article class="card">
+            <h3><span class="zh">官方模板</span><span class="en">Official templates</span></h3>
+            <p class="zh">可 Fork 的公司在公司库。</p>
+            <p class="en">Companies you can fork are listed in the company library.</p>
+            <a class="out" href="https://opencompany.run">opencompany.run</a>
+          </article>
+          <article class="card">
+            <h3><span class="zh">用 Munk AI 运行</span><span class="en">Run with Munk AI</span></h3>
+            <p class="zh">Munk AI 是这份规范的参考实现。</p>
+            <p class="en">Munk AI is the reference runtime for this spec.</p>
+            <a class="out" href="https://munk.sh">munk.sh</a>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Open Company · <code>open-company/v0</code></p>
+      <p class="zh">规范站。Schema 版本地址不可变。</p>
+      <p class="en">Spec site. Schema version URLs are immutable.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var KEY = "open-company-lang";
+      function apply(lang) {
+        document.documentElement.dataset.lang = lang;
+        document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+        document.title = lang === "zh"
+          ? "Open Company 规范 · open-company/v0"
+          : "Open Company spec · open-company/v0";
+        document.querySelectorAll("[data-set-lang]").forEach(function (button) {
+          button.setAttribute("aria-pressed", button.getAttribute("data-set-lang") === lang ? "true" : "false");
+        });
+      }
+      apply(document.documentElement.dataset.lang === "en" ? "en" : "zh");
+      document.querySelectorAll("[data-set-lang]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var lang = button.getAttribute("data-set-lang");
+          try { localStorage.setItem(KEY, lang); } catch (e) {}
+          apply(lang);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

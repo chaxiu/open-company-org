@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "spec": {
+      "type": "string",
+      "const": "open-company/v0",
+      "description": "Must be open-company/v0. This generation is experimental."
+    },
+    "id": {
+      "description": "UUID of the company that wrote this package. Writers include it. Readers still accept packages that omit it. Import does not adopt this id.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Display name. The spec measures length after trimming whitespace: 1–200. This schema's minLength/maxLength apply to the raw string and do not trim."
+    },
+    "description": {
+      "description": "Optional one-line description. If present, non-empty after trimming.",
+      "type": "string",
+      "minLength": 1
+    },
+    "homepage": {
+      "description": "Optional homepage URL.",
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "required": [
+    "spec",
+    "name"
+  ],
+  "additionalProperties": false,
+  "patternProperties": {
+    "^x-[A-Za-z0-9][A-Za-z0-9-]*$": true
+  },
+  "$id": "https://open-company.org/schema/v0/companyfile.json",
+  "$comment": "Generated with zod v4 z.toJSONSchema from the field constraints of companyfileSchema. The exported schema wraps those fields in a transform so vendor keys matching ^x-[A-Za-z0-9][A-Za-z0-9-]*$ are accepted and other unknown keys are rejected; JSON Schema cannot represent that transform, so those keys are patternProperties on each object. open-company/v0 is experimental and matches the Companyfile.yaml fields in Open Company spec v0. This version URL is immutable."
+}
