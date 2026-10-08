@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="brand/logo.svg" alt="Open Company" width="96">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/wordmark-dark.svg">
+    <img src="brand/wordmark.svg" alt="Open Company" width="320">
+  </picture>
 </p>
 
 # Open Company 规范
