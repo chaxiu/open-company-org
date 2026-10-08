@@ -1,20 +1,20 @@
 spec: open-company/v0
-id: munk-mind
-title: Munk Mind
+id: acme-notes
+title: Acme Notes
 lifecycle: live
 source:
-  git: https://github.com/owner/munk-mind
+  git: https://github.com/acme/acme-notes
   commit: 3f2c1a9
   branch: main
 requires:
   secrets:
-    - apple-asc
+    - app-store-key
   logins:
-    - feishu
+    - slack
 groups:
   - id: acquire
-    title: 获客
+    title: Acquisition
 projects:
   - id: feedback
-    title: 用户反馈
+    title: User feedback
     group: acquire

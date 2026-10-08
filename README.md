@@ -1,6 +1,6 @@
 # Open Company spec
 
-Static spec site for [open-company.org](https://open-company.org). It documents Open Company package v0: the directory, `Companyfile.yaml`, and `Productfile.yaml`.
+Static specification site for [open-company.org](https://open-company.org). It specifies Open Company v0: the package layout, `Companyfile.yaml`, `Productfile.yaml`, task files, agent files, guards, and import.
 
 Open `index.html`, or serve this directory at the site root so these paths resolve:
 
@@ -9,6 +9,22 @@ Open `index.html`, or serve this directory at the site root so these paths resol
 
 `open-company/v0` is experimental. Those version URLs stay as they are. A later v1 would use a new path.
 
-The schema files were generated with zod v4 `z.toJSONSchema` from the field constraints of `companyfileSchema` and `productfileSchema`. They do not depend on any other repository to be served.
+The schema files were generated with zod v4 `z.toJSONSchema` from the field constraints of `companyfileSchema` and `productfileSchema`. They do not depend on any other repository to be served. Task and agent front matter have no published schema in v0; the spec text is authoritative.
 
-Example package: `examples/acme/`.
+## Editing the specification
+
+The text lives in [`spec/zh.md`](spec/zh.md) and [`spec/en.md`](spec/en.md). [`index.html`](index.html) is generated from them.
+
+Section headings keep the same numbers in both files (`## 5. ...`, `### 5.1 ...`). `node build.mjs` refuses to write the page when those numbers diverge. A paragraph that is only bold is a term, and the next paragraph is its definition. A blockquote immediately before a code block is an example label; `Name · [Example file](path)` adds the link.
+
+After editing, regenerate the page and commit it with the Markdown:
+
+```bash
+node build.mjs
+```
+
+规范正文在 `spec/zh.md` 和 `spec/en.md`。改完后运行 `node build.mjs`，把生成的 `index.html` 一起提交。两边的章节号必须一致。
+
+Example package: `examples/acme/`. It loads cleanly with the reference reader (`loadOpenCompanyPackage`).
+
+The mark is an open bracket with the company record in the opening. `brand/logo.svg` is the color symbol, `brand/logo-mono.svg` is one-color. Raster masters are `brand/logo-512.png`, `brand/logo-mono-512.png`, and `brand/icon-512.png`. Site icons are `favicon.svg`, `favicon-32.png`, and `apple-touch-icon.png`.

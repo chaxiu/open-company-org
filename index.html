@@ -1,12 +1,15 @@
 <!DOCTYPE html>
+<!-- Generated from spec/zh.md and spec/en.md. Edit those files, then run node build.mjs. -->
 <html lang="zh-Hans" data-lang="zh">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Open Company 规范 · open-company/v0</title>
-  <meta name="description" content="Open Company spec v0 (experimental): the company package, Companyfile.yaml, and Productfile.yaml. 开放公司规范：一家公司包长什么样。">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230969da'/%3E%3Cpath d='M8 11h16M8 16h16M8 21h10' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <title>Open Company 规范</title>
+  <meta name="description" content="Open Company 规范 v0：把一家公司写成一个目录。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。">
+  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <script>
     (function () {
       var saved = null;
@@ -20,410 +23,744 @@
   </script>
 </head>
 <body>
-  <a class="skip" href="#main">
+  <a class="skip" href="#top">
     <span class="zh">跳到正文</span>
     <span class="en">Skip to content</span>
   </a>
 
-  <div class="banner">
-    <div class="container">
-      <p class="zh">open-company/v0 是实验版。等 2–3 家外部公司真的跑过，再发布 v1。v0 的 Schema 地址保持不变。</p>
-      <p class="en">open-company/v0 is experimental. v1 waits until two or three outside companies have actually run on it. The v0 schema URLs stay as they are.</p>
-    </div>
-  </div>
-
   <header class="site-header">
-    <div class="container header-inner">
-      <a class="wordmark" href="#top">Open Company</a>
-      <nav class="site-nav" aria-label="Sections">
-        <a href="#principles"><span class="zh">原理</span><span class="en">Principles</span></a>
-        <a href="#layout"><span class="zh">目录</span><span class="en">Layout</span></a>
-        <a href="#declarations"><span class="zh">声明</span><span class="en">Declarations</span></a>
-        <a href="#import"><span class="zh">导入</span><span class="en">Import</span></a>
-        <a href="#schema">Schema</a>
+    <div class="bar">
+      <a class="wordmark" href="#top"><img src="brand/logo.svg" alt="" width="22" height="22">Open Company</a>
+      <nav class="site-nav" aria-label="Sites">
+        <a href="https://opencompany.run">opencompany.run</a>
+        <a href="https://munk.sh">Munk AI</a>
       </nav>
-      <div class="header-tools">
-        <div class="header-links">
-          <a href="https://opencompany.run"><span class="zh">官方模板</span><span class="en">Templates</span></a>
-          <a href="https://munk.sh"><span class="zh">用 Munk AI 运行</span><span class="en">Run with Munk AI</span></a>
-        </div>
-        <div class="lang-switch" role="group" aria-label="Language">
-          <button type="button" data-set-lang="zh" aria-pressed="true">中文</button>
-          <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
-        </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-set-lang="zh" aria-pressed="true">中文</button>
+        <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
       </div>
     </div>
   </header>
 
-  <main id="main">
-    <div class="container hero" id="top">
-      <p class="eyebrow">Spec · open-company/v0</p>
-      <h1>Open Company</h1>
-      <p class="lede zh">一家可以 Fork 的公司，由 Agent 运营。这一站只回答一个问题：一家公司包长什么样。读完可以写出一份通过 Schema 校验的 <code>Companyfile.yaml</code>。</p>
-      <p class="lede en">A company you can fork, run by agents. This site answers one question: what a company package looks like. From this page you can write a <code>Companyfile.yaml</code> that validates against the schema.</p>
-    </div>
-
-    <section id="principles">
-      <div class="container">
-        <h2><span class="zh">三条原理</span><span class="en">Three principles</span></h2>
-        <div class="principles">
-          <article class="principle">
-            <span class="index">01</span>
-            <h3>
-              <span class="zh">一家公司就是一个仓库。</span>
-              <span class="en">A company is a repository.</span>
-            </h3>
-            <p class="zh">公司的做法写成文件：约定、产品声明、运营与发版的剧本、专员、Skill。一个人加上一条产品，就是最小的一家公司。v0 把这个目录放在 GitHub 仓库或本机文件夹里。</p>
-            <p class="en">The company's practice is files: agreements, product declarations, operating and release playbooks, agents, and skills. One person and one product are already a company. In v0 that directory lives in a GitHub repository or a local folder.</p>
-          </article>
-          <article class="principle">
-            <span class="index">02</span>
-            <h3>
-              <span class="zh">运行时把它跑起来，人在路口拍板。</span>
-              <span class="en">A runtime runs it; a person decides at the intersections.</span>
-            </h3>
-            <p class="zh">运行时执行这份目录。人在路口拍板：导入先给出预览，确认之后才写入；声明里的日程在导入后关着，由人打开。</p>
-            <p class="en">A runtime executes the directory. A person decides at the intersections: import shows a preview and writes only after confirmation, and declared schedules stay off until a person turns them on.</p>
-          </article>
-          <article class="principle">
-            <span class="index">03</span>
-            <h3>
-              <span class="zh">Fork 了就是你的。它带走的是做法，不是实例数据，也不是密钥。</span>
-              <span class="en">A fork is yours. It carries the practice, not the data or secrets.</span>
-            </h3>
-            <p class="zh">导入就是 Fork。之后这家公司是你的，不跟上游同步。包里是做法。密钥的值、实例记录和本机路径留在原地。</p>
-            <p class="en">Import is the fork. Afterwards the company is yours, with no sync to upstream. The package carries the practice. Secret values, instance records, and machine-local paths stay behind.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="layout">
-      <div class="container">
-        <h2><span class="zh">目录</span><span class="en">Directory</span></h2>
-        <p class="section-kicker zh">公司包是一个目录。导出时不带 <code>.git</code>。产品、专员和 Skill 靠路径发现，<code>Companyfile.yaml</code> 里不再列一遍。</p>
-        <p class="section-kicker en">A company package is a directory. An export has no <code>.git</code> directory. Products, agents, and skills are discovered by path. <code>Companyfile.yaml</code> does not list them again.</p>
-        <div class="panel" tabindex="0">
-          <pre><code>my-company/
-  Companyfile.yaml
-  AGENTS.md
+  <main id="top">
+  <article class="doc zh">
+    <h1>Open Company 规范</h1>
+    <dl class="meta">
+      <dt>版本</dt><dd><code>open-company/v0</code>，实验版本</dd>
+      <dt>修订</dt><dd>2026-10-08</dd>
+      <dt>Schema</dt><dd><a href="schema/v0/companyfile.json"><code>companyfile.json</code></a> · <a href="schema/v0/productfile.json"><code>productfile.json</code></a></dd>
+    </dl>
+    <p><strong>状态。</strong>v0 是实验版本。v0 已发布的字段定义和 Schema 地址不再改变。不兼容的修改将作为 v1 发布，使用新的 <code>spec</code> 值和新的 Schema 地址。</p>
+    <p>本文中，「必须」表示没有例外，「不得」表示禁止，「应当」表示除非有充分理由否则要这样做，「可以」表示允许但不要求。</p>
+    <nav class="toc" aria-label="目录">
+      <p class="toc-title">目录</p>
+      <ol>
+        <li><a href="#summary">摘要</a></li>
+        <li><a href="#scope">范围</a></li>
+        <li><a href="#terms">术语</a></li>
+        <li><a href="#principles">原则</a></li>
+        <li><a href="#layout">目录布局与通用规则</a></li>
+        <li><a href="#companyfile">Companyfile.yaml</a></li>
+        <li><a href="#productfile">Productfile.yaml</a></li>
+        <li><a href="#task">任务文件</a></li>
+        <li><a href="#agent">Agent 文件与 Skill</a></li>
+        <li><a href="#guard">检查脚本</a></li>
+        <li><a href="#import">导入</a></li>
+        <li><a href="#schema">Schema</a></li>
+        <li><a href="#sites">相关站点</a></li>
+      </ol>
+    </nav>
+    <h2 id="summary">1. 摘要<a class="anchor" href="#summary" aria-hidden="true">§</a></h2>
+    <p>Open Company 把一家公司写成一个目录。目录里有公司和产品的声明、给 Agent 的工作说明、按日程运行的任务，以及负责具体工作的 Agent。实现了本规范的运行时读取这个目录，替这家公司做研发和运营。</p>
+    <p>本规范规定这个目录的布局、其中每类文件的写法，以及运行时导入它时必须做什么。</p>
+    <h2 id="scope">2. 范围<a class="anchor" href="#scope" aria-hidden="true">§</a></h2>
+    <p>本规范规定：</p>
+    <ul>
+      <li>公司包的目录布局；</li>
+      <li><code>Companyfile.yaml</code> 与 <code>Productfile.yaml</code>；</li>
+      <li>任务文件、Agent 文件和检查脚本；</li>
+      <li>运行时导入公司包时必须遵守的步骤。</li>
+    </ul>
+    <p>本规范不规定：</p>
+    <ul>
+      <li>一家公司如何运营、如何发布产品；</li>
+      <li>使用哪一个运行时，以及运行时内部如何保存数据；</li>
+      <li>运行时如何生成公司包；</li>
+      <li>注册中心、账号或包托管。</li>
+    </ul>
+    <h2 id="terms">3. 术语<a class="anchor" href="#terms" aria-hidden="true">§</a></h2>
+    <dl class="fields">
+      <dt>公司包</dt>
+      <dd>按第 5 节布局组织、根目录有 <code>Companyfile.yaml</code> 的目录。包内不含 <code>.git</code>。</dd>
+      <dt>运行时</dt>
+      <dd>读取公司包、并按其中的声明执行工作的软件。</dd>
+      <dt>写出方</dt>
+      <dd>生成公司包的人或软件。</dd>
+      <dt>导入方</dt>
+      <dd>把公司包导入自己运行时的人。</dd>
+      <dt>声明文件</dt>
+      <dd><code>Companyfile.yaml</code> 和 <code>Productfile.yaml</code>，均为 YAML。</dd>
+      <dt>任务</dt>
+      <dd>一项反复执行的运营工作，例如每天整理用户反馈。一个任务一个 Markdown 文件。</dd>
+      <dt>班次</dt>
+      <dd>任务的一次执行。</dd>
+      <dt>Agent</dt>
+      <dd>负责某一类工作的执行者，例如文案。一个 Agent 一个 Markdown 文件。</dd>
+      <dt>Skill</dt>
+      <dd>一段可复用的做法，Agent 在工作中按需调用。</dd>
+      <dt>检查脚本</dt>
+      <dd>任务开始前运行的小脚本，决定这一次是否值得开始。</dd>
+    </dl>
+    <h2 id="principles">4. 原则<a class="anchor" href="#principles" aria-hidden="true">§</a></h2>
+    <ol>
+      <li><strong>一家公司是一个目录。</strong>做事的方法写成文件。一个人加一个产品，就可以是一家公司。v0 里，这个目录是一个 Git 仓库或一个本机文件夹。</li>
+      <li><strong>运行时执行，人来决定。</strong>导入前先给人看将要写入的内容，人确认之后才写入。任务的日程在导入后保持关闭，由人决定何时打开。</li>
+      <li><strong>复制之后，这家公司属于导入方。</strong>包里带走的是做法。密钥的值、运行记录、只在某台机器上有效的路径，都不进包。导入之后，与来源不再同步。</li>
+    </ol>
+    <h2 id="layout">5. 目录布局与通用规则<a class="anchor" href="#layout" aria-hidden="true">§</a></h2>
+    <pre><code>my-company/
+  Companyfile.yaml           公司声明（必须）
+  AGENTS.md                  公司级工作说明
   LICENSE
-  skills/{id}/SKILL.md
-  agents/{id}.md
-  projects/{id}/
+  agents/{id}.md             Agent
+  skills/{id}/SKILL.md       Skill
   products/{id}/
-    Productfile.yaml
-    AGENTS.md
-    goal.md
-    code/
-    projects/{id}/
-      README.md
-      tasks/{id}.md
-      .opencode/</code></pre>
-        </div>
-        <ul class="notes">
-          <li><code>Companyfile.yaml</code> — <span class="zh">公司声明。字段见下一节。</span><span class="en">The company declaration. Fields are in the next section.</span></li>
-          <li><code>AGENTS.md</code> — <span class="zh">公司约定。有才放。</span><span class="en">Company agreements. Include the file when you have them.</span></li>
-          <li><code>LICENSE</code> — <span class="zh">作者自选。运行时不解析，导出也不替你生成。</span><span class="en">The author's choice. A runtime does not parse it, and export does not invent one.</span></li>
-          <li><code>skills/{id}/SKILL.md</code> — <span class="zh">公司级 Skill。一个 id 一个目录。</span><span class="en">Company skills. One directory per id.</span></li>
-          <li><code>agents/{id}.md</code> — <span class="zh">公司级专员。Markdown，元数据放在文首。</span><span class="en">Company agents. Markdown, with metadata in frontmatter.</span></li>
-          <li><code>projects/{id}/</code> <span class="zh">（公司根下）</span><span class="en">(at the company root)</span> — <span class="zh">v0 只预留这个位置。导入时警告并跳过，导出不写出。</span><span class="en">Reserved in v0. Import warns and skips it. Export does not write it.</span></li>
-          <li><code>products/{id}/Productfile.yaml</code> — <span class="zh">一条产品一份声明。<code>id</code> 等于目录名 <code>{id}</code>。</span><span class="en">One declaration per product. <code>id</code> equals the directory name <code>{id}</code>.</span></li>
-          <li><code>products/{id}/AGENTS.md</code> — <span class="zh">产品约定。有才放。</span><span class="en">Product agreements, when you have them.</span></li>
-          <li><code>goal.md</code> — <span class="zh">可选。模板默认不带。</span><span class="en">Optional. Templates leave it out by default.</span></li>
-          <li><code>code/</code> — <span class="zh">只在 <code>source.path</code> 时出现。源码快照，不含 <code>.git</code>。</span><span class="en">Present only for <code>source.path</code>. A source snapshot, with no <code>.git</code>.</span></li>
-          <li><code>products/{id}/projects/{id}/</code> — <span class="zh"><code>README.md</code> 是项目说明书。<code>tasks/{id}.md</code> 一条任务一个文件，不写进 <code>Productfile.yaml</code>。</span><span class="en"><code>README.md</code> is the project brief. <code>tasks/{id}.md</code> is one task per file, and tasks are not fields of <code>Productfile.yaml</code>.</span></li>
-          <li><code>.opencode/</code> — <span class="zh">可选。按它自己的约定原样保留。规范不解析它，其中不能有密钥。</span><span class="en">Optional. Kept as its own convention. The spec does not parse it, and it must not contain secrets.</span></li>
-        </ul>
+    Productfile.yaml         产品声明（必须）
+    AGENTS.md                产品级工作说明
+    goal.md                  产品当前目标
+    code/                    源码快照，仅 source.path 形式
+    projects/{id}/           运营项目
+      README.md              项目说明
+      tasks/{id}.md          任务
+      guards/*.mjs           检查脚本
+      .opencode/             项目自带的 Agent、Skill 与配置</code></pre>
+    <p>除标注「必须」的两类文件外，其余都可以没有。产品、项目、任务、Agent 和 Skill 都按路径发现，声明文件里不再列一遍。</p>
+    <ul>
+      <li><code>AGENTS.md</code> 是给 Agent 读的工作说明，沿用 <a href="https://agents.md">AGENTS.md</a> 约定。公司级的对所有工作生效，产品级的只对该产品生效。</li>
+      <li><code>goal.md</code> 用一段正文写这个产品当前要达成的目标。</li>
+      <li><code>LICENSE</code> 由写出方选择。运行时不读取它。</li>
+      <li><code>code/</code> 只与 <code>source.path</code> 一起出现，是不含 <code>.git</code> 的源码快照。</li>
+      <li><code>.opencode/</code> 按 <a href="https://opencode.ai">OpenCode</a> 的目录约定原样保留。本规范不解析其中的内容。</li>
+      <li>项目目录中，<code>README.md</code>、<code>tasks/</code>、<code>guards/</code>、<code>.opencode/</code> 以外的文件不属于公司包，导入时不复制。</li>
+      <li>公司根目录下的 <code>projects/</code> 为以后的公司级项目保留。v0 运行时遇到它时应当给出警告并跳过，不得报错。</li>
+    </ul>
+    <h3 id="ids">5.1 标识与引用<a class="anchor" href="#ids" aria-hidden="true">§</a></h3>
+    <p>产品、项目、任务、分组、Agent 和 Skill 都有 <code>id</code>：小写字母开头，其后最多 47 个小写字母、数字或短横线，即 <code>^[a-z][a-z0-9-]{0,47}$</code>。<code>id</code> 等于对应的文件名或目录名（不含扩展名）。产品和 Agent 的 <code>id</code> 在公司内唯一，项目和分组的 <code>id</code> 在产品内唯一，任务的 <code>id</code> 在项目内唯一。</p>
+    <p>引用另一个对象时写它的 <code>id</code>。需要跨产品引用的字段写 <code>{product}/{id}</code>。每个字段允许哪种写法，在字段定义里说明。</p>
+    <h3 id="text">5.2 文本<a class="anchor" href="#text" aria-hidden="true">§</a></h3>
+    <p>字符串的长度按去掉首尾空白之后计算，单位是 UTF-16 码元。标为「非空」的字符串，去掉首尾空白后至少有一个字符。</p>
+    <h3 id="omit">5.3 省略<a class="anchor" href="#omit" aria-hidden="true">§</a></h3>
+    <p>写出方应当省略空列表、空对象，以及取默认值的键。读取方必须把省略的键按默认值处理。<code>requires.secrets</code> 和 <code>requires.logins</code> 一旦写出就不得为空。</p>
+    <h3 id="extensions">5.4 未知键与扩展<a class="anchor" href="#extensions" aria-hidden="true">§</a></h3>
+    <p>声明文件和 frontmatter 中，本版本未定义的键会使文件无效，以 <code>x-</code> 开头的扩展键除外。扩展键匹配 <code>^x-[A-Za-z0-9][A-Za-z0-9-]*$</code>，建议带上厂商名，例如 <code>x-acme</code>。任何对象都可以带扩展键。读取方必须接受扩展键，不认识时忽略即可。v0 运行时不保存扩展键，因此重新写出的包里不会再有它们。</p>
+    <h3 id="secrets">5.5 密钥<a class="anchor" href="#secrets" aria-hidden="true">§</a></h3>
+    <p>包内任何文件都不得包含密钥的值、访问令牌，或只在某台机器上有效的绝对路径。需要密钥时，只在 <code>requires.secrets</code> 里写它的名称。</p>
+    <h2 id="companyfile">6. Companyfile.yaml<a class="anchor" href="#companyfile" aria-hidden="true">§</a></h2>
+    <p>公司声明，位于包的根目录。最小的合法文件只有 <code>spec</code> 和 <code>name</code>。</p>
+    <dl class="fields">
+      <dt><code>spec</code></dt>
+      <dd>必填。值为 <code>open-company/v0</code>。</dd>
+      <dt><code>id</code></dt>
+      <dd>可选，写出方应当填写。UUID，标识写出这个包的公司，改名时不变。导入方不会把它当作自己的 id，只用它在再次导入时认出同一个包（见第 11 节）。</dd>
+      <dt><code>name</code></dt>
+      <dd>必填。显示名称，1–200 个字符，任何文字和空格都可以。只用于显示，不作查找键。</dd>
+      <dt><code>description</code></dt>
+      <dd>可选。一句话介绍。非空。</dd>
+      <dt><code>homepage</code></dt>
+      <dd>可选。主页 URL。</dd>
+    </dl>
+    <div class="sample">
+      <div class="sample-label">
+        <span>Companyfile.yaml</span>
+        <a href="examples/acme/Companyfile.yaml">示例文件</a>
       </div>
-    </section>
-
-    <section id="declarations">
-      <div class="container">
-        <h2><span class="zh">两份声明</span><span class="en">Two declarations</span></h2>
-        <p class="section-kicker zh"><code>Companyfile.yaml</code> 描述这家公司。每个 <code>products/{id}/Productfile.yaml</code> 描述一条产品。两份都是 YAML，<code>spec</code> 都写成 <code>open-company/v0</code>。空列表和关着的开关不写出来。不认识的键，除了 <code>x-*</code>，都会使文件不合法。</p>
-        <p class="section-kicker en"><code>Companyfile.yaml</code> describes the company. Each <code>products/{id}/Productfile.yaml</code> describes one product. Both are YAML, and both set <code>spec</code> to <code>open-company/v0</code>. Omit empty lists and switches that are off. Any unknown key other than <code>x-*</code> makes the file invalid.</p>
-
-        <h3 id="companyfile">Companyfile.yaml</h3>
-        <p class="field-note zh">公司声明。产品、专员、Skill 都在目录里，不在这个文件里列清单。</p>
-        <p class="field-note en">The company declaration. Products, agents, and skills live in the directory, not as a list in this file.</p>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th><span class="zh">字段</span><span class="en">Field</span></th>
-                <th><span class="zh">何时要写</span><span class="en">When required</span></th>
-                <th><span class="zh">规则</span><span class="en">Rule</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>spec</code></td>
-                <td><span class="zh">必写</span><span class="en">Always</span></td>
-                <td><code>open-company/v0</code></td>
-              </tr>
-              <tr>
-                <td><code>id</code></td>
-                <td><span class="zh">写出时要带。读旧包时可以没有。</span><span class="en">Include it when writing. Older packages may omit it.</span></td>
-                <td><span class="zh">UUID。它标出这份包是从哪一家公司写出来的。改 <code>name</code> 不改 <code>id</code>。导入不把它变成导入方自己的 id；再次导入时用它认出同一个包。</span><span class="en">A UUID. It identifies the company that wrote the package. Renaming does not change it. Import keeps the importer's own id and uses this value to recognize the same package later.</span></td>
-              </tr>
-              <tr>
-                <td><code>name</code></td>
-                <td><span class="zh">必写</span><span class="en">Always</span></td>
-                <td><span class="zh">显示名。去掉首尾空白后 1–200 个字符，可以有空格，可以用任何文字。它不是查找键。</span><span class="en">Display name. After trimming whitespace, 1–200 characters. Spaces and any language are allowed. It is not a lookup key.</span></td>
-              </tr>
-              <tr>
-                <td><code>description</code></td>
-                <td><span class="zh">可选</span><span class="en">Optional</span></td>
-                <td><span class="zh">一句话。写了就不能是空白。</span><span class="en">One line. If present, it is non-empty after trimming.</span></td>
-              </tr>
-              <tr>
-                <td><code>homepage</code></td>
-                <td><span class="zh">可选</span><span class="en">Optional</span></td>
-                <td><span class="zh">一个 URL。</span><span class="en">A URL.</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="field-note zh">最小的一份合法文件只需要 <code>spec</code> 和 <code>name</code>。新写的包带上 <code>id</code>。</p>
-        <p class="field-note en">The smallest valid file has <code>spec</code> and <code>name</code>. A newly written package includes <code>id</code>.</p>
-
-        <div class="file-block">
-          <div class="file-label">
-            <span>Companyfile.yaml</span>
-            <a href="examples/acme/Companyfile.yaml"><span class="zh">示例文件</span><span class="en">Example file</span></a>
-          </div>
-          <pre class="code"><code>spec: open-company/v0
+      <pre><code>spec: open-company/v0
 id: 7c9e6679-7425-40de-944b-e07fc1f90ae7
 name: Acme Labs
-description: 一句话说明这家公司做什么
+description: Tools for small teams.
 homepage: https://acme.example</code></pre>
-        </div>
-
-        <h3 id="productfile">Productfile.yaml</h3>
-        <p class="field-note zh">产品声明，放在 <code>products/{id}/Productfile.yaml</code>。<code>id</code> 与目录名相同。任务在 <code>projects/{id}/tasks/</code> 里，不在这个文件里。</p>
-        <p class="field-note en">The product declaration, at <code>products/{id}/Productfile.yaml</code>. <code>id</code> matches that directory name. Tasks live under <code>projects/{id}/tasks/</code>, not in this file.</p>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th><span class="zh">字段</span><span class="en">Field</span></th>
-                <th><span class="zh">何时要写</span><span class="en">When required</span></th>
-                <th><span class="zh">规则</span><span class="en">Rule</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>spec</code></td>
-                <td><span class="zh">必写</span><span class="en">Always</span></td>
-                <td><code>open-company/v0</code></td>
-              </tr>
-              <tr>
-                <td><code>id</code></td>
-                <td><span class="zh">必写</span><span class="en">Always</span></td>
-                <td><span class="zh">等于所在目录名。小写 kebab：以字母开头，后面最多 47 个 <code>a-z</code>、<code>0-9</code> 或 <code>-</code>。正则 <code>^[a-z][a-z0-9-]{0,47}$</code>。</span><span class="en">Equals the directory name. Lowercase kebab: a letter, then up to 47 of <code>a-z</code>, <code>0-9</code>, or <code>-</code>. Pattern <code>^[a-z][a-z0-9-]{0,47}$</code>.</span></td>
-              </tr>
-              <tr>
-                <td><code>title</code></td>
-                <td><span class="zh">必写</span><span class="en">Always</span></td>
-                <td><span class="zh">显示标题。去掉首尾空白后不能为空。</span><span class="en">Display title. Non-empty after trimming.</span></td>
-              </tr>
-              <tr>
-                <td><code>lifecycle</code></td>
-                <td><span class="zh">必写</span><span class="en">Always</span></td>
-                <td><code>explore</code>、<code>live</code>、<code>maintain</code>、<code>frozen</code> <span class="zh">之一。导入时可以改。</span><span class="en">One of those four. It may be changed at import.</span></td>
-              </tr>
-              <tr>
-                <td><code>source</code></td>
-                <td><span class="zh">必写，二选一</span><span class="en">Always, one form</span></td>
-                <td><span class="zh">用键名区分，不另设 <code>type</code>。<code>git</code> 与 <code>path</code> 只能出现一个。没有第三种「本机路径」形态。</span><span class="en">The key name is the form. There is no <code>type</code> field. <code>git</code> and <code>path</code> are mutually exclusive. A machine-local path is not a third form.</span></td>
-              </tr>
-              <tr>
-                <td><code>source.git</code></td>
-                <td><span class="zh"><code>git</code> 形态必写</span><span class="en">Required for <code>git</code></span></td>
-                <td><span class="zh">仓库 URL。导入时 checkout 到 <code>commit</code>。这个提交要已经在该 GitHub 仓库上。</span><span class="en">Repository URL. Import checks out <code>commit</code>. That commit already exists on the GitHub repository.</span></td>
-              </tr>
-              <tr>
-                <td><code>source.path</code></td>
-                <td><span class="zh"><code>path</code> 形态必写</span><span class="en">Required for <code>path</code></span></td>
-                <td><span class="zh">固定为 <code>./code</code>，相对这份 <code>Productfile.yaml</code>。快照不含 <code>.git</code>。</span><span class="en">Exactly <code>./code</code>, relative to this Productfile. The snapshot has no <code>.git</code>.</span></td>
-              </tr>
-              <tr>
-                <td><code>source.commit</code></td>
-                <td><span class="zh">两种形态都必写</span><span class="en">Required in both forms</span></td>
-                <td><span class="zh">7–64 位十六进制 SHA，大小写都可以。<code>git</code> 形态是要 checkout 的修订。<code>path</code> 形态只说明快照取自哪次提交。</span><span class="en">A 7–64 character hex SHA, either case. For <code>git</code>, the revision to check out. For <code>path</code>, provenance of the snapshot only.</span></td>
-              </tr>
-              <tr>
-                <td><code>source.branch</code></td>
-                <td><span class="zh">两种形态都必写</span><span class="en">Required in both forms</span></td>
-                <td><span class="zh">非空分支名。<code>path</code> 形态导入后，新仓库从这条分支开始。</span><span class="en">A non-empty branch name. For <code>path</code>, the new repository starts on this branch.</span></td>
-              </tr>
-              <tr>
-                <td><code>requires</code></td>
-                <td><span class="zh">可选</span><span class="en">Optional</span></td>
-                <td><span class="zh">导入方要自己准备的东西，只写名字。没有就整段省略。</span><span class="en">What the importer prepares. Names only. Omit the object when there is nothing to name.</span></td>
-              </tr>
-              <tr>
-                <td><code>requires.secrets</code></td>
-                <td><span class="zh">可选</span><span class="en">Optional</span></td>
-                <td><span class="zh">密钥名。写了这个键，至少一项，每一项去掉空白后非空。不写值。</span><span class="en">Secret names. If the key is present, at least one item, each non-empty after trimming. Values stay out.</span></td>
-              </tr>
-              <tr>
-                <td><code>requires.logins</code></td>
-                <td><span class="zh">可选</span><span class="en">Optional</span></td>
-                <td><span class="zh">要人在自己机器上先登录的平台名。规则与 <code>secrets</code> 相同。运行时不为这些名字做平台适配。</span><span class="en">Platform names a person logs into on their own machine. Same list rule as <code>secrets</code>. A runtime does not add platform adapters for these names.</span></td>
-              </tr>
-              <tr>
-                <td><code>groups</code></td>
-                <td><span class="zh">可选</span><span class="en">Optional</span></td>
-                <td><span class="zh">列表顺序就是分组顺序。每一项有 <code>id</code>（同上的 kebab）和 <code>title</code>（非空）。没有就省略。</span><span class="en">List order is the group order. Each item has <code>id</code> (the same kebab pattern) and a non-empty <code>title</code>. Omit the key when there are none.</span></td>
-              </tr>
-              <tr>
-                <td><code>projects</code></td>
-                <td><span class="zh">可选</span><span class="en">Optional</span></td>
-                <td><span class="zh">每一项有 <code>id</code>、<code>title</code>，以及可选的 <code>group</code>（某个分组的 <code>id</code>）。任务不写在这里。</span><span class="en">Each item has <code>id</code>, <code>title</code>, and an optional <code>group</code> (a group <code>id</code>). Tasks are not listed here.</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="split" style="margin-top: 1rem">
-          <div class="file-block">
-            <div class="file-label"><span>source.git</span><a href="examples/acme/products/munk-mind/Productfile.yaml"><span class="zh">示例文件</span><span class="en">Example file</span></a></div>
-            <pre class="code"><code>spec: open-company/v0
-id: munk-mind
-title: Munk Mind
+    </div>
+    <h2 id="productfile">7. Productfile.yaml<a class="anchor" href="#productfile" aria-hidden="true">§</a></h2>
+    <p>产品声明，位于 <code>products/{id}/Productfile.yaml</code>。</p>
+    <dl class="fields">
+      <dt><code>spec</code></dt>
+      <dd>必填。值为 <code>open-company/v0</code>。</dd>
+      <dt><code>id</code></dt>
+      <dd>必填。产品 id，必须等于所在目录名。</dd>
+      <dt><code>title</code></dt>
+      <dd>必填。显示标题。非空。</dd>
+      <dt><code>lifecycle</code></dt>
+      <dd>必填。产品所处阶段，取下表四个值之一。导入方可以在导入时修改。</dd>
+      <dt><code>source</code></dt>
+      <dd>必填。产品源码在哪里。有 <code>git</code> 和 <code>path</code> 两种形式，由对象里出现的是哪个键决定，二者不得同时出现。<code>source</code> 不得指向本机路径。</dd>
+      <dt><code>source.git</code></dt>
+      <dd><code>git</code> 形式必填。源码仓库的 URL。<code>commit</code> 必须能从这个地址取到。</dd>
+      <dt><code>source.path</code></dt>
+      <dd><code>path</code> 形式必填。值固定为 <code>./code</code>，指同目录下的源码快照。</dd>
+      <dt><code>source.commit</code></dt>
+      <dd>两种形式都必填。7–64 位十六进制提交号，大小写均可。<code>git</code> 形式下是导入时要检出的提交；<code>path</code> 形式下只记录快照取自哪一次提交。</dd>
+      <dt><code>source.branch</code></dt>
+      <dd>两种形式都必填。非空的分支名。导入后在这个分支上继续开发。</dd>
+      <dt><code>requires</code></dt>
+      <dd>可选。导入方需要自己准备的东西，只写名称。</dd>
+      <dt><code>requires.secrets</code></dt>
+      <dd>可选。需要的密钥名称列表，每项非空。只写名称，不写值。</dd>
+      <dt><code>requires.logins</code></dt>
+      <dd>可选。需要有人先在本机登录的平台名称列表，每项非空。名称是给人看的提示，本规范不定义名称表。</dd>
+      <dt><code>groups</code></dt>
+      <dd>可选。项目分组，列表顺序即显示顺序。每项有 <code>id</code> 和非空的 <code>title</code>。</dd>
+      <dt><code>projects</code></dt>
+      <dd>可选。运营项目。每项有 <code>id</code>、非空的 <code>title</code>，以及可选的 <code>group</code>。<code>group</code> 必须是本文件 <code>groups</code> 里的某个 <code>id</code>。项目的 <code>id</code> 等于 <code>projects/</code> 下的目录名。</dd>
+    </dl>
+    <table>
+      <thead><tr><th><code>lifecycle</code></th><th>含义</th></tr></thead>
+      <tbody>
+        <tr><td><code>explore</code></td><td>还在验证方向。</td></tr>
+        <tr><td><code>live</code></td><td>正式运营。</td></tr>
+        <tr><td><code>maintain</code></td><td>只做维护，不再扩展。</td></tr>
+        <tr><td><code>frozen</code></td><td>已冻结。运行时不得再按日程为它开始班次。</td></tr>
+      </tbody>
+    </table>
+    <div class="sample">
+      <div class="sample-label">
+        <span>Productfile.yaml · source.git</span>
+        <a href="examples/acme/products/acme-notes/Productfile.yaml">示例文件</a>
+      </div>
+      <pre><code>spec: open-company/v0
+id: acme-notes
+title: Acme Notes
 lifecycle: live
 source:
-  git: https://github.com/owner/munk-mind
+  git: https://github.com/acme/acme-notes
   commit: 3f2c1a9
   branch: main
 requires:
-  secrets: [apple-asc]
-  logins: [feishu]
+  secrets: [app-store-key]
+  logins: [slack]
 groups:
   - id: acquire
-    title: 获客
+    title: Acquisition
 projects:
   - id: feedback
-    title: 用户反馈
+    title: User feedback
     group: acquire</code></pre>
-          </div>
-          <div class="file-block">
-            <div class="file-label"><span>source.path</span></div>
-            <pre class="code"><code>spec: open-company/v0
-id: munk-mind
-title: Munk Mind
+    </div>
+    <div class="sample">
+      <div class="sample-label">
+        <span>Productfile.yaml · source.path</span>
+        
+      </div>
+      <pre><code>spec: open-company/v0
+id: acme-notes
+title: Acme Notes
 lifecycle: live
 source:
   path: ./code
   commit: 3f2c1a9
   branch: main</code></pre>
-          </div>
-        </div>
-        <p class="field-note zh"><code>products/munk-mind/code/</code> 只跟 <code>path</code> 这一份走。同一个 <code>source</code> 对象里只写 <code>git</code> 或 <code>path</code> 其中一种。Schema 检查形状。产品 <code>id</code> 与目录名一致，<code>group</code> 指向同文件里的分组，这两条由你按上面的规则对齐。</p>
-        <p class="field-note en"><code>products/munk-mind/code/</code> belongs with the <code>path</code> form. One <code>source</code> object carries either <code>git</code> or <code>path</code>. The schema checks shape. You keep the product <code>id</code> equal to the directory name, and point <code>group</code> at a group in the same file.</p>
-        <p class="field-note zh">任何对象都可以带 <code>x-</code> 加厂商名的键，例如 <code>x-example</code>。键名匹配 <code>^x-[A-Za-z0-9][A-Za-z0-9-]*$</code>。v0 读的时候留着它们，再写文件时不带回去。</p>
-        <p class="field-note en">Any object may carry a vendor key such as <code>x-example</code>. The name matches <code>^x-[A-Za-z0-9][A-Za-z0-9-]*$</code>. v0 keeps them when reading and leaves them out when writing the file again.</p>
+    </div>
+    <h2 id="task">8. 任务文件<a class="anchor" href="#task" aria-hidden="true">§</a></h2>
+    <p>位于 <code>products/{product}/projects/{project}/tasks/{id}.md</code>。文件以 YAML frontmatter 开头，其后的正文是这条任务的说明，执行班次的 Agent 按它工作。</p>
+    <dl class="fields">
+      <dt><code>title</code></dt>
+      <dd>必填。显示标题。非空。</dd>
+      <dt><code>trigger</code></dt>
+      <dd>可选。什么时候开始一个班次，取 <code>schedule</code>、<code>after</code>、<code>webhook</code> 三种形式之一。省略表示只能由人手动开始。</dd>
+      <dt><code>trigger.schedule</code></dt>
+      <dd>五段式 cron 表达式。相邻两次触发的最短间隔不超过 60 分钟时，必须同时写 <code>trigger.guard</code>。</dd>
+      <dt><code>trigger.after</code></dt>
+      <dd>上游任务，写成 <code>{project}/{task}</code>，必须在同一产品内，只能写一个。上游的一个班次成功结束、且当天不再续跑之后，开始本任务的班次。上游失败或取消时不触发。沿 <code>after</code> 往上追溯不得回到自己，链长不得超过 8。</dd>
+      <dt><code>trigger.webhook</code></dt>
+      <dd>值为空对象 <code>{}</code>。每收到一次外部请求开始一个班次。请求地址和令牌由导入方的运行时生成，不写在包里。</dd>
+      <dt><code>trigger.guard</code></dt>
+      <dd>可选，只能与 <code>schedule</code> 或 <code>after</code> 一起写。检查脚本的路径，相对于项目目录，必须是 <code>guards/</code> 下的 <code>.mjs</code> 文件（见第 10 节）。</dd>
+      <dt><code>period</code></dt>
+      <dd>这个班次负责的时间范围：<code>day</code>（当天）、<code>week</code>（上一周）或 <code>month</code>（当月）。它决定这一班汇总哪一段的记录，与运行频率无关。省略 <code>trigger</code>，或使用 <code>schedule</code>、<code>after</code> 时必填；使用 <code>webhook</code> 时不得填写。</dd>
+      <dt><code>followUp.maxPerDay</code></dt>
+      <dd>可选。一个班次没做完时，当天最多自动续跑几次，1–20。只能用于 <code>period: day</code>。省略表示不续跑。</dd>
+      <dt><code>team</code></dt>
+      <dd>可选。这个班次可以把工作分给哪些 Agent，写 Agent 的 <code>id</code>：可以是 <code>agents/</code> 下的，也可以是本项目 <code>.opencode/</code> 里的。</dd>
+      <dt><code>reads.projects</code></dt>
+      <dd>可选。这个班次可以只读查看的其他项目。同产品写项目 <code>id</code>，跨产品写 <code>{product}/{id}</code>。任务所在的项目本来就可以读写，不用写。</dd>
+      <dt><code>reads.code</code></dt>
+      <dd>可选。这个班次可以只读查看哪些产品的源码，写产品 <code>id</code>。</dd>
+    </dl>
+    <p>任务文件没有「是否启用」的字段。导入之后，所有日程都处于关闭状态，由人打开（见第 11 节）。</p>
+    <div class="sample">
+      <div class="sample-label">
+        <span>tasks/daily-review.md</span>
+        <a href="examples/acme/products/acme-notes/projects/feedback/tasks/daily-review.md">示例文件</a>
       </div>
-    </section>
+      <pre><code>---
+title: Daily review triage
+trigger:
+  schedule: &quot;*/30 * * * *&quot;
+  guard: guards/new-reviews.mjs
+period: day
+followUp:
+  maxPerDay: 2
+team: [copywriter]
+reads:
+  code: [acme-notes]
+---
 
-    <section id="import">
-      <div class="container">
-        <h2><span class="zh">如何导入</span><span class="en">How import works</span></h2>
-        <p class="section-kicker zh">导入的是上面这个目录。v0 的来源是本机目录，或一个 GitHub 仓库 URL（可以带 ref）。没有注册中心。</p>
-        <p class="section-kicker en">Import takes that directory. In v0 the source is a local directory, or a GitHub repository URL with an optional ref. There is no registry.</p>
-        <ol class="steps">
-          <li>
-            <span class="zh">把目录交给一个实现了这份规范的运行时。根上要有 <code>Companyfile.yaml</code>。产品在 <code>products/{id}/</code>。</span>
-            <span class="en">Give the directory to a runtime that implements this spec. The root contains <code>Companyfile.yaml</code>. Products are under <code>products/{id}/</code>.</span>
-          </li>
-          <li>
-            <span class="zh">运行时先给预览：将要加入的产品、项目、任务、专员和 Skill，以及要人补上的项（代码放在哪、密钥叫什么名字）。确认之前不写入。</span>
-            <span class="en">The runtime previews first: products, projects, tasks, agents, and skills it would add, plus what a person still supplies (where code goes, and the names of secrets). It writes nothing before confirmation.</span>
-          </li>
-          <li>
-            <span class="zh">人确认之后才写入。包里的 <code>id</code> 仍是写出这份包的那家公司的 uuid。导入方保持自己的 id，并用包里的 id 在下次导入时认出同一个包。</span>
-            <span class="en">A person confirms, and then it is written. The package <code>id</code> stays the uuid of the company that wrote it. The importer keeps its own id and uses the package id to recognize the same package on a later import.</span>
-          </li>
-          <li>
-            <span class="zh">导入之后就是导入方自己的公司。不记录上游地址，不提示有新版本，也不把改动送回上游。要公开这份目录，由人自己初始化 git 再推送。</span>
-            <span class="en">After import the company is the importer's. The import records no upstream URL, offers no update, and sends no changes back. Publishing the directory is a person's own git init and push.</span>
-          </li>
-          <li>
-            <span class="zh">任务文件里没有「开着」这个字段。导入后日程关着，由人之后打开。导入不开始工作。</span>
-            <span class="en">Task files have no on/off field. Schedules stay off after import until a person turns them on. Import does not start work.</span>
-          </li>
-        </ol>
-        <div class="split">
-          <article class="card">
-            <h3><code>source.git</code></h3>
-            <p class="zh">从 <code>git</code> 这个 URL checkout 到 <code>commit</code>，再从 <code>branch</code> 接着走。人可以把 URL 换成自己 Fork 的地址。v0 不替人创建那个 Fork。</p>
-            <p class="en">Check out <code>commit</code> from the <code>git</code> URL, then continue from <code>branch</code>. A person may substitute the URL of their own fork. v0 does not create that fork.</p>
-          </article>
-          <article class="card">
-            <h3><code>source.path</code></h3>
-            <p class="zh">把 <code>products/{id}/code/</code> 复制到人指定的位置，建成一个新仓库，起始分支是 <code>source.branch</code>。<code>commit</code> 只记录快照来自哪次提交。</p>
-            <p class="en">Copy <code>products/{id}/code/</code> to a place the person chooses and create a new repository whose first branch is <code>source.branch</code>. <code>commit</code> records which commit the snapshot came from.</p>
-          </article>
-        </div>
+Read new app store reviews, group them by issue,
+and draft a reply for each one that needs it.</code></pre>
+    </div>
+    <div class="sample">
+      <div class="sample-label">
+        <span>trigger.after</span>
+        
       </div>
-    </section>
+      <pre><code>trigger:
+  after: feedback/daily-review
+period: week</code></pre>
+    </div>
+    <h2 id="agent">9. Agent 文件与 Skill<a class="anchor" href="#agent" aria-hidden="true">§</a></h2>
+    <p>Agent 位于 <code>agents/{id}.md</code>。文件以 YAML frontmatter 开头，其后的正文是这个 Agent 的工作说明。</p>
+    <dl class="fields">
+      <dt><code>title</code></dt>
+      <dd>必填。显示名称。非空。</dd>
+      <dt><code>description</code></dt>
+      <dd>必填。一句话说明它负责什么。非空。</dd>
+      <dt><code>skills</code></dt>
+      <dd>可选。它可以使用的 Skill：<code>skills/</code> 下的 <code>id</code>，或运行时内置的 Skill 名称。每项 1–64 个字符。</dd>
+      <dt><code>mcp</code></dt>
+      <dd>可选。它可以使用的远程 MCP 服务名称，每项 1–64 个字符。连接地址和凭据不进包，由导入方配置。</dd>
+      <dt><code>browser</code></dt>
+      <dd>可选。为 <code>true</code> 时表示它的工作需要浏览器。运行时不提供浏览器时，必须在导入预览中提示。</dd>
+    </dl>
+    <div class="sample">
+      <div class="sample-label">
+        <span>agents/copywriter.md</span>
+        <a href="examples/acme/agents/copywriter.md">示例文件</a>
+      </div>
+      <pre><code>---
+title: Copywriter
+description: Drafts review replies and release notes.
+skills: [reply-style]
+---
 
-    <section id="schema">
-      <div class="container">
-        <h2>JSON Schema</h2>
-        <p class="section-kicker zh">文件是 YAML。Schema 校验的是解析之后的对象，草案 2020-12。下面两个地址属于 v0，之后不改内容、不改路径。</p>
-        <p class="section-kicker en">The files are YAML. The schema validates the parsed object, draft 2020-12. These two v0 URLs keep their path and their meaning.</p>
-        <div class="schema-links">
-          <p><a href="schema/v0/companyfile.json">/schema/v0/companyfile.json</a></p>
-          <p><a href="schema/v0/productfile.json">/schema/v0/productfile.json</a></p>
-        </div>
-        <p class="field-note zh">它们由 <code>companyfileSchema</code> 与 <code>productfileSchema</code> 的字段约束，用 zod v4 的 <code>z.toJSONSchema</code> 生成。导出的 schema 用一层变换放行 <code>x-*</code>，JSON Schema 表达不了这层变换，所以每个对象用 <code>patternProperties</code> 放行同样的键，其余未知键拒绝。<code>commit</code> 在源 schema 里不区分大小写，生成结果把字符类写成 <code>[0-9a-fA-F]</code>。</p>
-        <p class="field-note en">They were generated with zod v4 <code>z.toJSONSchema</code> from the field constraints of <code>companyfileSchema</code> and <code>productfileSchema</code>. The exported schemas allow <code>x-*</code> through a transform JSON Schema cannot represent, so each object allows the same keys with <code>patternProperties</code> and rejects every other unknown key. <code>commit</code> is case-insensitive in the source schema; the generated pattern uses <code>[0-9a-fA-F]</code>.</p>
-        <p class="field-note zh">长度按去掉首尾空白之后计算。JSON Schema 的 <code>minLength</code> / <code>maxLength</code> 作用在原始字符串上，不会先裁空白。参考实现会先裁。另外，Schema 不检查产品 <code>id</code> 是否等于目录名，也不检查 <code>group</code> 是否指向同文件里的分组。</p>
-        <p class="field-note en">Length is measured after trimming. JSON Schema <code>minLength</code> / <code>maxLength</code> apply to the raw string and do not trim. The reference check trims first. The schema also does not check that a product <code>id</code> equals its directory name, or that <code>group</code> points at a group in the same file.</p>
+Write short, plain replies. Thank the user once,
+answer the actual question, and never promise dates.</code></pre>
+    </div>
+    <p>Skill 位于 <code>skills/{id}/SKILL.md</code>，同一目录下可以带它需要的其他文件。<code>SKILL.md</code> 沿用 <a href="https://agentskills.io">Agent Skills</a> 的格式，本规范不另行规定。</p>
+    <h2 id="guard">10. 检查脚本<a class="anchor" href="#guard" aria-hidden="true">§</a></h2>
+    <p>检查脚本位于 <code>products/{product}/projects/{project}/guards/</code>，是一个 JavaScript 模块（<code>.mjs</code>）。日程到点或上游完成后，运行时先运行它，再决定是否开始班次。这样，频繁的日程只在真的有事时才动用 Agent。</p>
+    <ul>
+      <li>运行时以项目目录为工作目录、用 Node.js 运行它，并设置超时。</li>
+      <li>退出码 <code>0</code>：开始班次。运行时应当把标准输出交给这个班次，说明这次为什么开始。</li>
+      <li>退出码 <code>1</code>：这次跳过，不开始班次。</li>
+      <li>其他退出码、超时或抛出异常：检查出错，不开始班次。</li>
+      <li>检查脚本只读，不得修改任何文件，也不得依赖密钥的值。它需要的进度记录由任务的班次写在项目目录里。</li>
+    </ul>
+    <div class="sample">
+      <div class="sample-label">
+        <span>guards/new-reviews.mjs</span>
+        
       </div>
-    </section>
+      <pre><code>import { existsSync, readFileSync } from &quot;node:fs&quot;;
 
-    <section id="elsewhere">
-      <div class="container">
-        <h2><span class="zh">相关站点</span><span class="en">Related sites</span></h2>
-        <div class="elsewhere">
-          <article class="card">
-            <h3><span class="zh">官方模板</span><span class="en">Official templates</span></h3>
-            <p class="zh">可 Fork 的公司在公司库。</p>
-            <p class="en">Companies you can fork are listed in the company library.</p>
-            <a class="out" href="https://opencompany.run">opencompany.run</a>
-          </article>
-          <article class="card">
-            <h3><span class="zh">用 Munk AI 运行</span><span class="en">Run with Munk AI</span></h3>
-            <p class="zh">Munk AI 是这份规范的参考实现。</p>
-            <p class="en">Munk AI is the reference runtime for this spec.</p>
-            <a class="out" href="https://munk.sh">munk.sh</a>
-          </article>
-        </div>
+const file = &quot;inbox/reviews.json&quot;;
+const reviews = existsSync(file) ? JSON.parse(readFileSync(file, &quot;utf8&quot;)) : [];
+if (reviews.length === 0) process.exit(1);
+console.log(`${reviews.length} new reviews`);</code></pre>
+    </div>
+    <p>检查脚本是公司包里唯一会被执行的代码。导入它等于允许它在导入方的机器上运行，所以导入时必须先给人看（见第 11 节）。</p>
+    <h2 id="import">11. 导入<a class="anchor" href="#import" aria-hidden="true">§</a></h2>
+    <p>导入的输入是一个本机目录，或一个 GitHub 仓库 URL（可以指定 ref）。v0 没有注册中心。实现了本规范的运行时导入时必须依次做到：</p>
+    <ol>
+      <li><strong>校验。</strong>包的根目录必须有 <code>Companyfile.yaml</code>。按本规范逐个校验文件，包括 Schema 检查不到的规则：<code>id</code> 等于文件名或目录名，<code>group</code> 指向存在的分组，<code>after</code> 不成环、链长不超过 8，短间隔日程写了检查脚本。任一文件不合格，必须拒绝导入，并指出是哪个文件、哪一条。</li>
+      <li><strong>预览。</strong>写入任何内容之前，列出将要加入的产品、项目、任务、Agent 和 Skill；仍须由人提供的东西，即代码放在哪里、密钥名称和登录平台；以及包里所有可执行的内容和需要的外部能力，即检查脚本的全文、MCP 名称和浏览器需求。同名对象已经存在时，由人选择改名或跳过。</li>
+      <li><strong>确认后写入。</strong>人确认之后才写入。写入中途失败时，必须撤回已经写入的部分。</li>
+      <li><strong>不自动开始。</strong>导入完成后，所有日程都处于关闭状态。导入本身不运行检查脚本，也不开始任何班次。</li>
+      <li><strong>不跟踪来源。</strong>导入完成后，这家公司属于导入方。运行时不记录来源地址，不提示来源有新版本，也不把本地改动送回来源。</li>
+      <li><strong>再次导入。</strong>运行时可以用 <code>Companyfile.yaml</code> 的 <code>id</code> 认出这是之前导入过的同一个包。这时它把差异逐项列出，由人勾选要更新的项。没有勾选的项保持本机现状，本机独有的项不得删除。</li>
+    </ol>
+    <h3 id="import-git">11.1 <code>source.git</code><a class="anchor" href="#import-git" aria-hidden="true">§</a></h3>
+    <p>从 <code>source.git</code> 取得源码，检出 <code>commit</code>，然后在 <code>branch</code> 上继续。导入方可以把地址换成自己的仓库，例如一个 fork。v0 不会替导入方创建这个仓库。</p>
+    <h3 id="import-path">11.2 <code>source.path</code><a class="anchor" href="#import-path" aria-hidden="true">§</a></h3>
+    <p>把 <code>products/{id}/code/</code> 复制到导入方选择的位置，在那里新建仓库，起始分支为 <code>branch</code>。<code>commit</code> 只用来说明快照的出处。</p>
+    <h2 id="schema">12. Schema<a class="anchor" href="#schema" aria-hidden="true">§</a></h2>
+    <p>两份声明文件各有一份 JSON Schema（draft 2020-12），用来校验 YAML 解析之后的对象。这两个地址属于 v0，内容不再改变。</p>
+    <ul>
+      <li><a href="schema/v0/companyfile.json"><code>/schema/v0/companyfile.json</code></a></li>
+      <li><a href="schema/v0/productfile.json"><code>/schema/v0/productfile.json</code></a></li>
+    </ul>
+    <p>Schema 只检查单个文件的形状，有三点检查不到：长度不先去掉首尾空白再计算；不检查 <code>id</code> 是否等于目录名；不检查跨字段、跨文件的引用。这些由运行时在导入时检查（见第 11 节第 1 步）。任务文件和 Agent 文件在 v0 没有单独的 Schema，以第 8、9 节为准。</p>
+    <h2 id="sites">13. 相关站点<a class="anchor" href="#sites" aria-hidden="true">§</a></h2>
+    <p><a href="https://opencompany.run">opencompany.run</a> 收录符合本规范的公司包，供人导入。尚未上线。</p>
+    <p><a href="https://munk.sh">Munk AI</a> 是一个实现了本规范的运行时。</p>
+  </article>
+
+  <article class="doc en">
+    <h1>Open Company Specification</h1>
+    <dl class="meta">
+      <dt>Version</dt><dd><code>open-company/v0</code>, experimental</dd>
+      <dt>Revised</dt><dd>2026-10-08</dd>
+      <dt>Schema</dt><dd><a href="schema/v0/companyfile.json"><code>companyfile.json</code></a> · <a href="schema/v0/productfile.json"><code>productfile.json</code></a></dd>
+    </dl>
+    <p><strong>Status.</strong> v0 is experimental. Field definitions and schema URLs published under v0 will not change. Incompatible changes will ship as v1, with a new <code>spec</code> value and new schema URLs.</p>
+    <p>In this document, “must” means without exception, “must not” means forbidden, “should” means required unless there is a good reason not to, and “may” means allowed but not required.</p>
+    <nav class="toc" aria-label="Contents">
+      <p class="toc-title">Contents</p>
+      <ol>
+        <li><a href="#summary-en">Summary</a></li>
+        <li><a href="#scope-en">Scope</a></li>
+        <li><a href="#terms-en">Terms</a></li>
+        <li><a href="#principles-en">Principles</a></li>
+        <li><a href="#layout-en">Layout and general rules</a></li>
+        <li><a href="#companyfile-en">Companyfile.yaml</a></li>
+        <li><a href="#productfile-en">Productfile.yaml</a></li>
+        <li><a href="#task-en">Task files</a></li>
+        <li><a href="#agent-en">Agent files and skills</a></li>
+        <li><a href="#guard-en">Guards</a></li>
+        <li><a href="#import-en">Import</a></li>
+        <li><a href="#schema-en">Schema</a></li>
+        <li><a href="#sites-en">Related sites</a></li>
+      </ol>
+    </nav>
+    <h2 id="summary-en">1. Summary<a class="anchor" href="#summary-en" aria-hidden="true">§</a></h2>
+    <p>Open Company describes a company as a directory. The directory holds declarations for the company and its products, instructions for agents, tasks that run on a schedule, and the agents that do the work. A runtime that implements this specification reads the directory and runs engineering and operations for the company.</p>
+    <p>This specification defines the layout of that directory, how each kind of file in it is written, and what a runtime must do when it imports one.</p>
+    <h2 id="scope-en">2. Scope<a class="anchor" href="#scope-en" aria-hidden="true">§</a></h2>
+    <p>This specification defines:</p>
+    <ul>
+      <li>the layout of a company package;</li>
+      <li><code>Companyfile.yaml</code> and <code>Productfile.yaml</code>;</li>
+      <li>task files, agent files, and guards;</li>
+      <li>the steps a runtime must follow when importing a company package.</li>
+    </ul>
+    <p>This specification does not define:</p>
+    <ul>
+      <li>how a company operates or ships its products;</li>
+      <li>which runtime to use, or how a runtime stores its data;</li>
+      <li>how a runtime produces a company package;</li>
+      <li>a registry, accounts, or package hosting.</li>
+    </ul>
+    <h2 id="terms-en">3. Terms<a class="anchor" href="#terms-en" aria-hidden="true">§</a></h2>
+    <dl class="fields">
+      <dt>Company package</dt>
+      <dd>A directory laid out as in section 5, with <code>Companyfile.yaml</code> at its root. It contains no <code>.git</code>.</dd>
+      <dt>Runtime</dt>
+      <dd>Software that reads a company package and does the work it declares.</dd>
+      <dt>Writer</dt>
+      <dd>The person or software that produces a company package.</dd>
+      <dt>Importer</dt>
+      <dd>The person who imports a company package into their own runtime.</dd>
+      <dt>Declaration file</dt>
+      <dd><code>Companyfile.yaml</code> or <code>Productfile.yaml</code>. Both are YAML.</dd>
+      <dt>Task</dt>
+      <dd>A recurring piece of operations work, such as sorting user feedback every day. One Markdown file per task.</dd>
+      <dt>Shift</dt>
+      <dd>One run of a task.</dd>
+      <dt>Agent</dt>
+      <dd>A worker responsible for one kind of work, such as copywriting. One Markdown file per agent.</dd>
+      <dt>Skill</dt>
+      <dd>A reusable procedure that an agent calls on while working.</dd>
+      <dt>Guard</dt>
+      <dd>A small script that runs before a task starts and decides whether this run is worth starting.</dd>
+    </dl>
+    <h2 id="principles-en">4. Principles<a class="anchor" href="#principles-en" aria-hidden="true">§</a></h2>
+    <ol>
+      <li><strong>A company is a directory.</strong> How it works is written down as files. One person and one product can be a company. In v0, the directory is a Git repository or a local folder.</li>
+      <li><strong>The runtime does the work; a person decides.</strong> Before import, a person sees what will be written, and nothing is written until they confirm. Task schedules stay off after import until a person turns them on.</li>
+      <li><strong>Once copied, the company belongs to the importer.</strong> A package carries the way of working. Secret values, run history, and paths that only exist on one machine stay out of it. After import, nothing stays in sync with the source.</li>
+    </ol>
+    <h2 id="layout-en">5. Layout and general rules<a class="anchor" href="#layout-en" aria-hidden="true">§</a></h2>
+    <pre><code>my-company/
+  Companyfile.yaml           company declaration (required)
+  AGENTS.md                  company-wide instructions
+  LICENSE
+  agents/{id}.md             agents
+  skills/{id}/SKILL.md       skills
+  products/{id}/
+    Productfile.yaml         product declaration (required)
+    AGENTS.md                product instructions
+    goal.md                  current product goal
+    code/                    source snapshot, source.path only
+    projects/{id}/           operations projects
+      README.md              project description
+      tasks/{id}.md          tasks
+      guards/*.mjs           guards
+      .opencode/             project-local agents, skills, and config</code></pre>
+    <p>Apart from the two files marked required, everything is optional. Products, projects, tasks, agents, and skills are found by path; declaration files do not list them again.</p>
+    <ul>
+      <li><code>AGENTS.md</code> holds instructions for agents and follows the <a href="https://agents.md">AGENTS.md</a> convention. The company-level file applies to all work; a product-level file applies only to that product.</li>
+      <li><code>goal.md</code> states, in prose, what the product is currently trying to achieve.</li>
+      <li><code>LICENSE</code> is chosen by the writer. Runtimes do not read it.</li>
+      <li><code>code/</code> appears only with <code>source.path</code>. It is a source snapshot without <code>.git</code>.</li>
+      <li><code>.opencode/</code> is kept as is, following the <a href="https://opencode.ai">OpenCode</a> directory convention. This specification does not interpret its contents.</li>
+      <li>In a project directory, files other than <code>README.md</code>, <code>tasks/</code>, <code>guards/</code>, and <code>.opencode/</code> are not part of the package and are not copied on import.</li>
+      <li><code>projects/</code> at the company root is reserved for future company-level projects. A v0 runtime should warn and skip it, and must not fail because of it.</li>
+    </ul>
+    <h3 id="ids-en">5.1 Identifiers and references<a class="anchor" href="#ids-en" aria-hidden="true">§</a></h3>
+    <p>Products, projects, tasks, groups, agents, and skills each have an <code>id</code>: a lowercase letter followed by at most 47 lowercase letters, digits, or hyphens, that is <code>^[a-z][a-z0-9-]{0,47}$</code>. An <code>id</code> equals the corresponding file or directory name, without extension. Product and agent ids are unique within the company, project and group ids within a product, and task ids within a project.</p>
+    <p>To refer to another object, write its <code>id</code>. Fields that allow references across products use <code>{product}/{id}</code>. Each field definition states which forms it accepts.</p>
+    <h3 id="text-en">5.2 Text<a class="anchor" href="#text-en" aria-hidden="true">§</a></h3>
+    <p>String length is measured after trimming leading and trailing whitespace, in UTF-16 code units. A string marked “non-empty” has at least one character after trimming.</p>
+    <h3 id="omit-en">5.3 Omission<a class="anchor" href="#omit-en" aria-hidden="true">§</a></h3>
+    <p>Writers should omit empty lists, empty objects, and keys that hold their default value. Readers must treat an omitted key as its default. <code>requires.secrets</code> and <code>requires.logins</code>, when present, must not be empty.</p>
+    <h3 id="extensions-en">5.4 Unknown keys and extensions<a class="anchor" href="#extensions-en" aria-hidden="true">§</a></h3>
+    <p>In declaration files and front matter, a key this version does not define makes the file invalid, unless it is an extension key starting with <code>x-</code>. Extension keys match <code>^x-[A-Za-z0-9][A-Za-z0-9-]*$</code> and should include a vendor name, such as <code>x-acme</code>. Any object may carry extension keys. Readers must accept them and may ignore those they do not recognize. v0 runtimes do not store extension keys, so a package written again will not contain them.</p>
+    <h3 id="secrets-en">5.5 Secrets<a class="anchor" href="#secrets-en" aria-hidden="true">§</a></h3>
+    <p>No file in a package may contain a secret value, an access token, or an absolute path that only exists on one machine. When a secret is needed, list only its name in <code>requires.secrets</code>.</p>
+    <h2 id="companyfile-en">6. Companyfile.yaml<a class="anchor" href="#companyfile-en" aria-hidden="true">§</a></h2>
+    <p>The company declaration, at the package root. The smallest valid file has only <code>spec</code> and <code>name</code>.</p>
+    <dl class="fields">
+      <dt><code>spec</code></dt>
+      <dd>Required. The value is <code>open-company/v0</code>.</dd>
+      <dt><code>id</code></dt>
+      <dd>Optional; writers should include it. A UUID that identifies the company that wrote the package. It does not change when the company is renamed. The importer does not adopt it as its own id; it only uses it to recognize the same package on a later import (see section 11).</dd>
+      <dt><code>name</code></dt>
+      <dd>Required. Display name, 1–200 characters, in any script, spaces allowed. Used for display only, not as a lookup key.</dd>
+      <dt><code>description</code></dt>
+      <dd>Optional. A one-sentence introduction. Non-empty.</dd>
+      <dt><code>homepage</code></dt>
+      <dd>Optional. Homepage URL.</dd>
+    </dl>
+    <div class="sample">
+      <div class="sample-label">
+        <span>Companyfile.yaml</span>
+        <a href="examples/acme/Companyfile.yaml">Example file</a>
       </div>
-    </section>
+      <pre><code>spec: open-company/v0
+id: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+name: Acme Labs
+description: Tools for small teams.
+homepage: https://acme.example</code></pre>
+    </div>
+    <h2 id="productfile-en">7. Productfile.yaml<a class="anchor" href="#productfile-en" aria-hidden="true">§</a></h2>
+    <p>The product declaration, at <code>products/{id}/Productfile.yaml</code>.</p>
+    <dl class="fields">
+      <dt><code>spec</code></dt>
+      <dd>Required. The value is <code>open-company/v0</code>.</dd>
+      <dt><code>id</code></dt>
+      <dd>Required. The product id. Must equal the name of the directory it is in.</dd>
+      <dt><code>title</code></dt>
+      <dd>Required. Display title. Non-empty.</dd>
+      <dt><code>lifecycle</code></dt>
+      <dd>Required. The product's stage, one of the four values in the table below. The importer may change it on import.</dd>
+      <dt><code>source</code></dt>
+      <dd>Required. Where the product's source code is. There are two forms, <code>git</code> and <code>path</code>; the form is determined by which of the two keys is present, and they must not appear together. <code>source</code> must not point at a local path.</dd>
+      <dt><code>source.git</code></dt>
+      <dd>Required in the <code>git</code> form. URL of the source repository. <code>commit</code> must be reachable from it.</dd>
+      <dt><code>source.path</code></dt>
+      <dd>Required in the <code>path</code> form. Always <code>./code</code>, the source snapshot next to this file.</dd>
+      <dt><code>source.commit</code></dt>
+      <dd>Required in both forms. A 7–64 digit hexadecimal commit hash, in either case. In the <code>git</code> form it is the commit to check out on import; in the <code>path</code> form it only records which commit the snapshot was taken from.</dd>
+      <dt><code>source.branch</code></dt>
+      <dd>Required in both forms. A non-empty branch name. Development continues on this branch after import.</dd>
+      <dt><code>requires</code></dt>
+      <dd>Optional. Things the importer must provide, by name only.</dd>
+      <dt><code>requires.secrets</code></dt>
+      <dd>Optional. Names of the secrets needed, each non-empty. Names only, never values.</dd>
+      <dt><code>requires.logins</code></dt>
+      <dd>Optional. Names of platforms someone must first sign in to on the local machine, each non-empty. The names are hints for people; this specification does not define a list of them.</dd>
+      <dt><code>groups</code></dt>
+      <dd>Optional. Project groups, displayed in list order. Each item has an <code>id</code> and a non-empty <code>title</code>.</dd>
+      <dt><code>projects</code></dt>
+      <dd>Optional. Operations projects. Each item has an <code>id</code>, a non-empty <code>title</code>, and an optional <code>group</code>, which must be the <code>id</code> of an entry in <code>groups</code> in this file. A project <code>id</code> equals its directory name under <code>projects/</code>.</dd>
+    </dl>
+    <table>
+      <thead><tr><th><code>lifecycle</code></th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>explore</code></td><td>Still testing the direction.</td></tr>
+        <tr><td><code>live</code></td><td>In active operation.</td></tr>
+        <tr><td><code>maintain</code></td><td>Maintenance only, no new scope.</td></tr>
+        <tr><td><code>frozen</code></td><td>Frozen. A runtime must not start scheduled shifts for it.</td></tr>
+      </tbody>
+    </table>
+    <div class="sample">
+      <div class="sample-label">
+        <span>Productfile.yaml · source.git</span>
+        <a href="examples/acme/products/acme-notes/Productfile.yaml">Example file</a>
+      </div>
+      <pre><code>spec: open-company/v0
+id: acme-notes
+title: Acme Notes
+lifecycle: live
+source:
+  git: https://github.com/acme/acme-notes
+  commit: 3f2c1a9
+  branch: main
+requires:
+  secrets: [app-store-key]
+  logins: [slack]
+groups:
+  - id: acquire
+    title: Acquisition
+projects:
+  - id: feedback
+    title: User feedback
+    group: acquire</code></pre>
+    </div>
+    <div class="sample">
+      <div class="sample-label">
+        <span>Productfile.yaml · source.path</span>
+        
+      </div>
+      <pre><code>spec: open-company/v0
+id: acme-notes
+title: Acme Notes
+lifecycle: live
+source:
+  path: ./code
+  commit: 3f2c1a9
+  branch: main</code></pre>
+    </div>
+    <h2 id="task-en">8. Task files<a class="anchor" href="#task-en" aria-hidden="true">§</a></h2>
+    <p>Located at <code>products/{product}/projects/{project}/tasks/{id}.md</code>. The file starts with YAML front matter. The body that follows is the task's instructions; the agent running a shift works from it.</p>
+    <dl class="fields">
+      <dt><code>title</code></dt>
+      <dd>Required. Display title. Non-empty.</dd>
+      <dt><code>trigger</code></dt>
+      <dd>Optional. When a shift starts: one of three forms, <code>schedule</code>, <code>after</code>, or <code>webhook</code>. When omitted, shifts start only when a person starts one by hand.</dd>
+      <dt><code>trigger.schedule</code></dt>
+      <dd>A five-field cron expression. If the shortest interval between two consecutive runs is 60 minutes or less, <code>trigger.guard</code> is required.</dd>
+      <dt><code>trigger.after</code></dt>
+      <dd>The upstream task, written <code>{project}/{task}</code>. It must be in the same product, and there can be only one. A shift of this task starts after a shift of the upstream task succeeds and will not be followed up that day. Upstream failure or cancellation does not trigger it. Following <code>after</code> upstream must never lead back to the same task, and the chain must not be longer than 8.</dd>
+      <dt><code>trigger.webhook</code></dt>
+      <dd>An empty object, <code>{}</code>. Each incoming request starts a shift. The request URL and token are generated by the importer's runtime and are not part of the package.</dd>
+      <dt><code>trigger.guard</code></dt>
+      <dd>Optional, and allowed only with <code>schedule</code> or <code>after</code>. Path to a guard, relative to the project directory. It must be a <code>.mjs</code> file under <code>guards/</code> (see section 10).</dd>
+      <dt><code>period</code></dt>
+      <dd>The time range a shift is responsible for: <code>day</code> (today), <code>week</code> (the previous week), or <code>month</code> (this month). It decides which span of records the shift summarizes, independent of how often it runs. Required when <code>trigger</code> is omitted or uses <code>schedule</code> or <code>after</code>. Must not be set with <code>webhook</code>.</dd>
+      <dt><code>followUp.maxPerDay</code></dt>
+      <dd>Optional. How many times per day a shift that did not finish may be continued automatically, 1–20. Only with <code>period: day</code>. When omitted, there are no follow-ups.</dd>
+      <dt><code>team</code></dt>
+      <dd>Optional. Agents the shift may hand work to, by agent <code>id</code>, either from <code>agents/</code> or from this project's <code>.opencode/</code>.</dd>
+      <dt><code>reads.projects</code></dt>
+      <dd>Optional. Other projects the shift may read but not change. Use a project <code>id</code> within the same product, or <code>{product}/{id}</code> across products. The task's own project is always readable and writable and is not listed.</dd>
+      <dt><code>reads.code</code></dt>
+      <dd>Optional. Products whose source code the shift may read but not change, by product <code>id</code>.</dd>
+    </dl>
+    <p>Task files have no “enabled” field. After import, every schedule is off until a person turns it on (see section 11).</p>
+    <div class="sample">
+      <div class="sample-label">
+        <span>tasks/daily-review.md</span>
+        <a href="examples/acme/products/acme-notes/projects/feedback/tasks/daily-review.md">Example file</a>
+      </div>
+      <pre><code>---
+title: Daily review triage
+trigger:
+  schedule: &quot;*/30 * * * *&quot;
+  guard: guards/new-reviews.mjs
+period: day
+followUp:
+  maxPerDay: 2
+team: [copywriter]
+reads:
+  code: [acme-notes]
+---
+
+Read new app store reviews, group them by issue,
+and draft a reply for each one that needs it.</code></pre>
+    </div>
+    <div class="sample">
+      <div class="sample-label">
+        <span>trigger.after</span>
+        
+      </div>
+      <pre><code>trigger:
+  after: feedback/daily-review
+period: week</code></pre>
+    </div>
+    <h2 id="agent-en">9. Agent files and skills<a class="anchor" href="#agent-en" aria-hidden="true">§</a></h2>
+    <p>Agents are at <code>agents/{id}.md</code>. The file starts with YAML front matter. The body that follows is the agent's instructions.</p>
+    <dl class="fields">
+      <dt><code>title</code></dt>
+      <dd>Required. Display name. Non-empty.</dd>
+      <dt><code>description</code></dt>
+      <dd>Required. One sentence on what it is responsible for. Non-empty.</dd>
+      <dt><code>skills</code></dt>
+      <dd>Optional. Skills it may use: an <code>id</code> under <code>skills/</code>, or the name of a skill built into the runtime. Each 1–64 characters.</dd>
+      <dt><code>mcp</code></dt>
+      <dd>Optional. Names of remote MCP servers it may use, each 1–64 characters. Connection URLs and credentials are not part of the package; the importer configures them.</dd>
+      <dt><code>browser</code></dt>
+      <dd>Optional. <code>true</code> means its work needs a browser. A runtime that does not provide one must say so in the import preview.</dd>
+    </dl>
+    <div class="sample">
+      <div class="sample-label">
+        <span>agents/copywriter.md</span>
+        <a href="examples/acme/agents/copywriter.md">Example file</a>
+      </div>
+      <pre><code>---
+title: Copywriter
+description: Drafts review replies and release notes.
+skills: [reply-style]
+---
+
+Write short, plain replies. Thank the user once,
+answer the actual question, and never promise dates.</code></pre>
+    </div>
+    <p>Skills are at <code>skills/{id}/SKILL.md</code>, and may bring other files they need in the same directory. <code>SKILL.md</code> follows the <a href="https://agentskills.io">Agent Skills</a> format; this specification adds no rules of its own.</p>
+    <h2 id="guard-en">10. Guards<a class="anchor" href="#guard-en" aria-hidden="true">§</a></h2>
+    <p>Guards live in <code>products/{product}/projects/{project}/guards/</code> and are JavaScript modules (<code>.mjs</code>). When a schedule fires or an upstream task finishes, the runtime runs the guard first and then decides whether to start a shift. This way a frequent schedule only puts an agent to work when there is something to do.</p>
+    <ul>
+      <li>The runtime runs it with Node.js, with the project directory as the working directory, under a timeout.</li>
+      <li>Exit code <code>0</code>: start a shift. The runtime should pass standard output to the shift as the reason it started.</li>
+      <li>Exit code <code>1</code>: skip this time; no shift starts.</li>
+      <li>Any other exit code, a timeout, or an uncaught exception: the check failed; no shift starts.</li>
+      <li>A guard is read-only: it must not change any file, and must not depend on secret values. Any progress it relies on is written into the project directory by the task's shifts.</li>
+    </ul>
+    <div class="sample">
+      <div class="sample-label">
+        <span>guards/new-reviews.mjs</span>
+        
+      </div>
+      <pre><code>import { existsSync, readFileSync } from &quot;node:fs&quot;;
+
+const file = &quot;inbox/reviews.json&quot;;
+const reviews = existsSync(file) ? JSON.parse(readFileSync(file, &quot;utf8&quot;)) : [];
+if (reviews.length === 0) process.exit(1);
+console.log(`${reviews.length} new reviews`);</code></pre>
+    </div>
+    <p>Guards are the only code in a package that gets executed. Importing one means allowing it to run on the importer's machine, so it must be shown to a person at import (see section 11).</p>
+    <h2 id="import-en">11. Import<a class="anchor" href="#import-en" aria-hidden="true">§</a></h2>
+    <p>The input to import is a local directory or a GitHub repository URL, optionally with a ref. v0 has no registry. A runtime that implements this specification must, in order:</p>
+    <ol>
+      <li><strong>Validate.</strong> The package root must contain <code>Companyfile.yaml</code>. Check every file against this specification, including the rules the schemas cannot check: each <code>id</code> equals its file or directory name, each <code>group</code> names an existing group, <code>after</code> chains have no cycles and are at most 8 long, and short-interval schedules have a guard. If any file fails, reject the import and say which file and which rule.</li>
+      <li><strong>Preview.</strong> Before writing anything, list the products, projects, tasks, agents, and skills to be added; what a person still has to provide, namely where the code goes, the secret names, and the login platforms; and everything executable or external the package needs, namely the full text of each guard, the MCP names, and browser requirements. When an object with the same name already exists, let the person choose to rename or skip it.</li>
+      <li><strong>Write only after confirmation.</strong> Nothing is written until a person confirms. If writing fails partway, undo what was already written.</li>
+      <li><strong>Start nothing.</strong> After import, every schedule is off. Import itself runs no guard and starts no shift.</li>
+      <li><strong>Do not track the source.</strong> After import, the company belongs to the importer. The runtime records no source URL, does not announce newer versions of the source, and sends no local changes back.</li>
+      <li><strong>Import again.</strong> A runtime may use the <code>id</code> in <code>Companyfile.yaml</code> to recognize a package it has imported before. It then lists the differences one by one, and the person checks the ones to update. Unchecked items keep their local state, and items that exist only locally must not be deleted.</li>
+    </ol>
+    <h3 id="import-git-en">11.1 <code>source.git</code><a class="anchor" href="#import-git-en" aria-hidden="true">§</a></h3>
+    <p>Fetch the source from <code>source.git</code>, check out <code>commit</code>, and continue on <code>branch</code>. The importer may replace the URL with a repository of their own, such as a fork. v0 does not create that repository for the importer.</p>
+    <h3 id="import-path-en">11.2 <code>source.path</code><a class="anchor" href="#import-path-en" aria-hidden="true">§</a></h3>
+    <p>Copy <code>products/{id}/code/</code> to a location the importer chooses and create a new repository there, starting on <code>branch</code>. <code>commit</code> only records where the snapshot came from.</p>
+    <h2 id="schema-en">12. Schema<a class="anchor" href="#schema-en" aria-hidden="true">§</a></h2>
+    <p>Each declaration file has a JSON Schema (draft 2020-12) that validates the object after YAML parsing. These two URLs belong to v0 and their content will not change.</p>
+    <ul>
+      <li><a href="schema/v0/companyfile.json"><code>/schema/v0/companyfile.json</code></a></li>
+      <li><a href="schema/v0/productfile.json"><code>/schema/v0/productfile.json</code></a></li>
+    </ul>
+    <p>The schemas check the shape of one file at a time and cannot check three things: they measure length without trimming first; they do not check that an <code>id</code> equals its directory name; and they do not check references across fields or files. A runtime checks these at import (section 11, step 1). Task files and agent files have no separate schema in v0; sections 8 and 9 are authoritative.</p>
+    <h2 id="sites-en">13. Related sites<a class="anchor" href="#sites-en" aria-hidden="true">§</a></h2>
+    <p><a href="https://opencompany.run">opencompany.run</a> collects company packages that conform to this specification, for others to import. Not yet live.</p>
+    <p><a href="https://munk.sh">Munk AI</a> is a runtime that implements this specification.</p>
+  </article>
   </main>
 
   <footer>
-    <div class="container">
-      <p>Open Company · <code>open-company/v0</code></p>
-      <p class="zh">规范站。Schema 版本地址不可变。</p>
-      <p class="en">Spec site. Schema version URLs are immutable.</p>
+    <div class="foot">
+      <p>Open Company · <code>open-company/v0</code> · 2026-10-08</p>
     </div>
   </footer>
 
   <script>
     (function () {
       var KEY = "open-company-lang";
+      var copy = {"zh":{"title":"Open Company 规范","description":"Open Company 规范 v0：把一家公司写成一个目录。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。"},"en":{"title":"Open Company Specification","description":"Open Company Specification v0: a company written as a directory. Layout, Companyfile.yaml, Productfile.yaml, task and agent files, and import."}};
       function apply(lang) {
+        var page = copy[lang] || copy.zh;
         document.documentElement.dataset.lang = lang;
         document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
-        document.title = lang === "zh"
-          ? "Open Company 规范 · open-company/v0"
-          : "Open Company spec · open-company/v0";
+        document.title = page.title;
+        var description = document.querySelector('meta[name="description"]');
+        if (description) description.setAttribute("content", page.description);
         document.querySelectorAll("[data-set-lang]").forEach(function (button) {
           button.setAttribute("aria-pressed", button.getAttribute("data-set-lang") === lang ? "true" : "false");
         });
