@@ -1,5 +1,7 @@
 # Open Company spec
 
+[中文](README.zh-CN.md)
+
 Static specification site for [open-company.org](https://open-company.org). It specifies Open Company v0: the package layout, `Companyfile.yaml`, `Productfile.yaml`, task files, agent files, guards, and import.
 
 Open `index.html`, or serve this directory at the site root so these paths resolve:
@@ -22,8 +24,6 @@ After editing, regenerate the page and commit it with the Markdown:
 ```bash
 node build.mjs
 ```
-
-规范正文在 `spec/zh.md` 和 `spec/en.md`。改完后运行 `node build.mjs`，把生成的 `index.html` 一起提交。两边的章节号必须一致。
 
 Example package: `examples/acme/`. It loads cleanly with the reference reader (`loadOpenCompanyPackage`).
 
