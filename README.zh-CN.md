@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="brand/logo.svg" alt="Open Company" width="96">
+</p>
+
 # Open Company 规范
 
 [English](README.md)
@@ -27,4 +31,12 @@ node build.mjs
 
 示例包在 `examples/acme/`。参考读取器（`loadOpenCompanyPackage`）可以干净地加载它。
 
-标志是一个开口括号，开口里是公司记录。`brand/logo.svg` 是彩色符号，`brand/logo-mono.svg` 是单色。位图母版是 `brand/logo-512.png`、`brand/logo-mono-512.png` 和 `brand/icon-512.png`。站点图标是 `favicon.svg`、`favicon-32.png` 和 `apple-touch-icon.png`。
+标志是一个开口括号，开口里是公司记录。
+
+<p align="center">
+  <img src="brand/logo.svg" alt="彩色标志" width="72">
+  <img src="brand/logo-mono.svg" alt="单色标志" width="72">
+  <img src="brand/icon-tile.svg" alt="图标" width="72">
+</p>
+
+`brand/logo.svg` 是彩色符号，`brand/logo-mono.svg` 是单色，`brand/icon-tile.svg` 是方标。位图母版是 `brand/logo-512.png`、`brand/logo-mono-512.png` 和 `brand/icon-512.png`。站点图标是 `favicon.svg`、`favicon-32.png` 和 `apple-touch-icon.png`。

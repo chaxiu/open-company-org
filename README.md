@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="brand/logo.svg" alt="Open Company" width="96">
+</p>
+
 # Open Company spec
 
 [中文](README.zh-CN.md)
@@ -27,4 +31,12 @@ node build.mjs
 
 Example package: `examples/acme/`. It loads cleanly with the reference reader (`loadOpenCompanyPackage`).
 
-The mark is an open bracket with the company record in the opening. `brand/logo.svg` is the color symbol, `brand/logo-mono.svg` is one-color. Raster masters are `brand/logo-512.png`, `brand/logo-mono-512.png`, and `brand/icon-512.png`. Site icons are `favicon.svg`, `favicon-32.png`, and `apple-touch-icon.png`.
+The mark is an open bracket with the company record in the opening.
+
+<p align="center">
+  <img src="brand/logo.svg" alt="Color mark" width="72">
+  <img src="brand/logo-mono.svg" alt="One-color mark" width="72">
+  <img src="brand/icon-tile.svg" alt="Icon tile" width="72">
+</p>
+
+`brand/logo.svg` is the color symbol, `brand/logo-mono.svg` is one-color, and `brand/icon-tile.svg` is the tile. Raster masters are `brand/logo-512.png`, `brand/logo-mono-512.png`, and `brand/icon-512.png`. Site icons are `favicon.svg`, `favicon-32.png`, and `apple-touch-icon.png`.
