@@ -13,13 +13,13 @@ spec: open-company/v0
 versionLabel: "Version"
 version: "`open-company/v0`, experimental"
 revisedLabel: "Revised"
-revised: "2026-10-08"
+revised: "2026-10-10"
 schemaLabel: "Schema"
 ---
 
 # Open Company Specification
 
-**Status.** v0 is experimental. Field definitions and schema URLs published under v0 will not change. Incompatible changes will ship as v1, with a new `spec` value and new schema URLs.
+**Status.** v0 is experimental. The meaning of a published field and the schema URLs stay the same. Optional fields may be added while v0 is experimental, and are recorded in the revised date at the top. Incompatible changes will ship as v1, with a new `spec` value and new schema URLs.
 
 In this document, “must” means without exception, “must not” means forbidden, “should” means required unless there is a good reason not to, and “may” means allowed but not required.
 
@@ -222,7 +222,7 @@ Required in both forms. A non-empty branch name. Development continues on this b
 
 **`requires`**
 
-Optional. Things the importer must provide, by name only.
+Optional. Things the importer must provide. `secrets` and `logins` are names only.
 
 **`requires.secrets`**
 
@@ -231,6 +231,10 @@ Optional. Names of the secrets needed, each non-empty. Names only, never values.
 **`requires.logins`**
 
 Optional. Names of platforms someone must first sign in to on the local machine, each non-empty. The names are hints for people; this specification does not define a list of them.
+
+**`requires.browser`**
+
+Optional. A boolean. Omission and `false` are the same, and writers should omit `false`. When `true`, this product needs its own login browser, which the importer prepares on their machine. The package does not include paths, cookies, or profile files.
 
 **`groups`**
 
@@ -428,7 +432,7 @@ Guards are the only code in a package that gets executed. Importing one means al
 The input to import is a local directory or a GitHub repository URL, optionally with a ref. v0 has no registry. A runtime that implements this specification must, in order:
 
 1. **Validate.** The package root must contain `Companyfile.yaml`. Check every file against this specification, including the rules the schemas cannot check: each `id` equals its file or directory name, each `group` names an existing group, `after` chains have no cycles and are at most 8 long, and short-interval schedules have a guard. If any file fails, reject the import and say which file and which rule.
-2. **Preview.** Before writing anything, list the products, projects, tasks, agents, and skills to be added; what a person still has to provide, namely where the code goes, the secret names, and the login platforms; and everything executable or external the package needs, namely the full text of each guard, the MCP names, and browser requirements. When an object with the same name already exists, let the person choose to rename or skip it.
+2. **Preview.** Before writing anything, list the products, projects, tasks, agents, and skills to be added; what a person still has to provide, namely where the code goes, the secret names, the login platforms, and which products need their own login browser; and everything executable or external the package needs, namely the full text of each guard, the MCP names, and which agents need a browser. When an object with the same name already exists, let the person choose to rename or skip it.
 3. **Write only after confirmation.** Nothing is written until a person confirms. If writing fails partway, undo what was already written.
 4. **Start nothing.** After import, every schedule is off. Import itself runs no guard and starts no shift.
 5. **Do not track the source.** After import, the company belongs to the importer. The runtime records no source URL, does not announce newer versions of the source, and sends no local changes back.
@@ -444,7 +448,7 @@ Copy `products/{id}/code/` to a location the importer chooses and create a new r
 
 ## 12. Schema
 
-Each declaration file has a JSON Schema (draft 2020-12) that validates the object after YAML parsing. These two URLs belong to v0 and their content will not change.
+Each declaration file has a JSON Schema (draft 2020-12) that validates the object after YAML parsing. These two URLs belong to v0 and stay the same. The meaning of a published field does not change. Optional fields added while v0 is experimental are recorded in the revised date at the top.
 
 - [`/schema/v0/companyfile.json`](schema/v0/companyfile.json)
 - [`/schema/v0/productfile.json`](schema/v0/productfile.json)

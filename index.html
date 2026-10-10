@@ -47,10 +47,10 @@
     <h1>Open Company 规范</h1>
     <dl class="meta">
       <dt>版本</dt><dd><code>open-company/v0</code>，实验版本</dd>
-      <dt>修订</dt><dd>2026-10-08</dd>
+      <dt>修订</dt><dd>2026-10-10</dd>
       <dt>Schema</dt><dd><a href="schema/v0/companyfile.json"><code>companyfile.json</code></a> · <a href="schema/v0/productfile.json"><code>productfile.json</code></a></dd>
     </dl>
-    <p><strong>状态。</strong>v0 是实验版本。v0 已发布的字段定义和 Schema 地址不再改变。不兼容的修改将作为 v1 发布，使用新的 <code>spec</code> 值和新的 Schema 地址。</p>
+    <p><strong>状态。</strong>v0 是实验版本。已发布字段的含义和 Schema 地址保持不变。实验期内可以增加可选字段，并记在文首的修订日期里。不兼容的修改将作为 v1 发布，使用新的 <code>spec</code> 值和新的 Schema 地址。</p>
     <p>本文中，「必须」表示没有例外，「不得」表示禁止，「应当」表示除非有充分理由否则要这样做，「可以」表示允许但不要求。</p>
     <nav class="toc" aria-label="目录">
       <p class="toc-title">目录</p>
@@ -202,11 +202,13 @@ homepage: https://acme.example</code></pre>
       <dt><code>source.branch</code></dt>
       <dd>两种形式都必填。非空的分支名。导入后在这个分支上继续开发。</dd>
       <dt><code>requires</code></dt>
-      <dd>可选。导入方需要自己准备的东西，只写名称。</dd>
+      <dd>可选。导入方需要自己准备的东西。<code>secrets</code> 和 <code>logins</code> 只写名称。</dd>
       <dt><code>requires.secrets</code></dt>
       <dd>可选。需要的密钥名称列表，每项非空。只写名称，不写值。</dd>
       <dt><code>requires.logins</code></dt>
       <dd>可选。需要有人先在本机登录的平台名称列表，每项非空。名称是给人看的提示，本规范不定义名称表。</dd>
+      <dt><code>requires.browser</code></dt>
+      <dd>可选。布尔值。省略与 <code>false</code> 相同，写出方应当省略 <code>false</code>。为 <code>true</code> 时，这个产品需要一份独立的登录浏览器，由导入方在本机准备。包里不写路径、cookie 或配置档。</dd>
       <dt><code>groups</code></dt>
       <dd>可选。项目分组，列表顺序即显示顺序。每项有 <code>id</code> 和非空的 <code>title</code>。</dd>
       <dt><code>projects</code></dt>
@@ -371,7 +373,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     <p>导入的输入是一个本机目录，或一个 GitHub 仓库 URL（可以指定 ref）。v0 没有注册中心。实现了本规范的运行时导入时必须依次做到：</p>
     <ol>
       <li><strong>校验。</strong>包的根目录必须有 <code>Companyfile.yaml</code>。按本规范逐个校验文件，包括 Schema 检查不到的规则：<code>id</code> 等于文件名或目录名，<code>group</code> 指向存在的分组，<code>after</code> 不成环、链长不超过 8，短间隔日程写了检查脚本。任一文件不合格，必须拒绝导入，并指出是哪个文件、哪一条。</li>
-      <li><strong>预览。</strong>写入任何内容之前，列出将要加入的产品、项目、任务、Agent 和 Skill；仍须由人提供的东西，即代码放在哪里、密钥名称和登录平台；以及包里所有可执行的内容和需要的外部能力，即检查脚本的全文、MCP 名称和浏览器需求。同名对象已经存在时，由人选择改名或跳过。</li>
+      <li><strong>预览。</strong>写入任何内容之前，列出将要加入的产品、项目、任务、Agent 和 Skill；仍须由人提供的东西，即代码放在哪里、密钥名称、登录平台，以及哪些产品需要独立的登录浏览器；以及包里所有可执行的内容和需要的外部能力，即检查脚本的全文、MCP 名称，和哪些 Agent 需要浏览器。同名对象已经存在时，由人选择改名或跳过。</li>
       <li><strong>确认后写入。</strong>人确认之后才写入。写入中途失败时，必须撤回已经写入的部分。</li>
       <li><strong>不自动开始。</strong>导入完成后，所有日程都处于关闭状态。导入本身不运行检查脚本，也不开始任何班次。</li>
       <li><strong>不跟踪来源。</strong>导入完成后，这家公司属于导入方。运行时不记录来源地址，不提示来源有新版本，也不把本地改动送回来源。</li>
@@ -382,7 +384,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     <h3 id="import-path">11.2 <code>source.path</code><a class="anchor" href="#import-path" aria-hidden="true">§</a></h3>
     <p>把 <code>products/{id}/code/</code> 复制到导入方选择的位置，在那里新建仓库，起始分支为 <code>branch</code>。<code>commit</code> 只用来说明快照的出处。</p>
     <h2 id="schema">12. Schema<a class="anchor" href="#schema" aria-hidden="true">§</a></h2>
-    <p>两份声明文件各有一份 JSON Schema（draft 2020-12），用来校验 YAML 解析之后的对象。这两个地址属于 v0，内容不再改变。</p>
+    <p>两份声明文件各有一份 JSON Schema（draft 2020-12），用来校验 YAML 解析之后的对象。这两个地址属于 v0，保持不变。已发布字段的含义不变。实验期内增加的可选字段记在文首的修订日期里。</p>
     <ul>
       <li><a href="schema/v0/companyfile.json"><code>/schema/v0/companyfile.json</code></a></li>
       <li><a href="schema/v0/productfile.json"><code>/schema/v0/productfile.json</code></a></li>
@@ -397,10 +399,10 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     <h1>Open Company Specification</h1>
     <dl class="meta">
       <dt>Version</dt><dd><code>open-company/v0</code>, experimental</dd>
-      <dt>Revised</dt><dd>2026-10-08</dd>
+      <dt>Revised</dt><dd>2026-10-10</dd>
       <dt>Schema</dt><dd><a href="schema/v0/companyfile.json"><code>companyfile.json</code></a> · <a href="schema/v0/productfile.json"><code>productfile.json</code></a></dd>
     </dl>
-    <p><strong>Status.</strong> v0 is experimental. Field definitions and schema URLs published under v0 will not change. Incompatible changes will ship as v1, with a new <code>spec</code> value and new schema URLs.</p>
+    <p><strong>Status.</strong> v0 is experimental. The meaning of a published field and the schema URLs stay the same. Optional fields may be added while v0 is experimental, and are recorded in the revised date at the top. Incompatible changes will ship as v1, with a new <code>spec</code> value and new schema URLs.</p>
     <p>In this document, “must” means without exception, “must not” means forbidden, “should” means required unless there is a good reason not to, and “may” means allowed but not required.</p>
     <nav class="toc" aria-label="Contents">
       <p class="toc-title">Contents</p>
@@ -552,11 +554,13 @@ homepage: https://acme.example</code></pre>
       <dt><code>source.branch</code></dt>
       <dd>Required in both forms. A non-empty branch name. Development continues on this branch after import.</dd>
       <dt><code>requires</code></dt>
-      <dd>Optional. Things the importer must provide, by name only.</dd>
+      <dd>Optional. Things the importer must provide. <code>secrets</code> and <code>logins</code> are names only.</dd>
       <dt><code>requires.secrets</code></dt>
       <dd>Optional. Names of the secrets needed, each non-empty. Names only, never values.</dd>
       <dt><code>requires.logins</code></dt>
       <dd>Optional. Names of platforms someone must first sign in to on the local machine, each non-empty. The names are hints for people; this specification does not define a list of them.</dd>
+      <dt><code>requires.browser</code></dt>
+      <dd>Optional. A boolean. Omission and <code>false</code> are the same, and writers should omit <code>false</code>. When <code>true</code>, this product needs its own login browser, which the importer prepares on their machine. The package does not include paths, cookies, or profile files.</dd>
       <dt><code>groups</code></dt>
       <dd>Optional. Project groups, displayed in list order. Each item has an <code>id</code> and a non-empty <code>title</code>.</dd>
       <dt><code>projects</code></dt>
@@ -721,7 +725,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     <p>The input to import is a local directory or a GitHub repository URL, optionally with a ref. v0 has no registry. A runtime that implements this specification must, in order:</p>
     <ol>
       <li><strong>Validate.</strong> The package root must contain <code>Companyfile.yaml</code>. Check every file against this specification, including the rules the schemas cannot check: each <code>id</code> equals its file or directory name, each <code>group</code> names an existing group, <code>after</code> chains have no cycles and are at most 8 long, and short-interval schedules have a guard. If any file fails, reject the import and say which file and which rule.</li>
-      <li><strong>Preview.</strong> Before writing anything, list the products, projects, tasks, agents, and skills to be added; what a person still has to provide, namely where the code goes, the secret names, and the login platforms; and everything executable or external the package needs, namely the full text of each guard, the MCP names, and browser requirements. When an object with the same name already exists, let the person choose to rename or skip it.</li>
+      <li><strong>Preview.</strong> Before writing anything, list the products, projects, tasks, agents, and skills to be added; what a person still has to provide, namely where the code goes, the secret names, the login platforms, and which products need their own login browser; and everything executable or external the package needs, namely the full text of each guard, the MCP names, and which agents need a browser. When an object with the same name already exists, let the person choose to rename or skip it.</li>
       <li><strong>Write only after confirmation.</strong> Nothing is written until a person confirms. If writing fails partway, undo what was already written.</li>
       <li><strong>Start nothing.</strong> After import, every schedule is off. Import itself runs no guard and starts no shift.</li>
       <li><strong>Do not track the source.</strong> After import, the company belongs to the importer. The runtime records no source URL, does not announce newer versions of the source, and sends no local changes back.</li>
@@ -732,7 +736,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     <h3 id="import-path-en">11.2 <code>source.path</code><a class="anchor" href="#import-path-en" aria-hidden="true">§</a></h3>
     <p>Copy <code>products/{id}/code/</code> to a location the importer chooses and create a new repository there, starting on <code>branch</code>. <code>commit</code> only records where the snapshot came from.</p>
     <h2 id="schema-en">12. Schema<a class="anchor" href="#schema-en" aria-hidden="true">§</a></h2>
-    <p>Each declaration file has a JSON Schema (draft 2020-12) that validates the object after YAML parsing. These two URLs belong to v0 and their content will not change.</p>
+    <p>Each declaration file has a JSON Schema (draft 2020-12) that validates the object after YAML parsing. These two URLs belong to v0 and stay the same. The meaning of a published field does not change. Optional fields added while v0 is experimental are recorded in the revised date at the top.</p>
     <ul>
       <li><a href="schema/v0/companyfile.json"><code>/schema/v0/companyfile.json</code></a></li>
       <li><a href="schema/v0/productfile.json"><code>/schema/v0/productfile.json</code></a></li>
@@ -746,7 +750,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
 
   <footer>
     <div class="foot">
-      <p>Open Company · <code>open-company/v0</code> · 2026-10-08</p>
+      <p>Open Company · <code>open-company/v0</code> · 2026-10-10</p>
     </div>
   </footer>
 

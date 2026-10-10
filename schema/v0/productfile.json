@@ -111,6 +111,10 @@
             "type": "string",
             "minLength": 1
           }
+        },
+        "browser": {
+          "description": "When true, this product needs its own login browser on the importer's machine. Omit when false. Paths, cookies, and profile files are not included.",
+          "type": "boolean"
         }
       },
       "additionalProperties": false,
