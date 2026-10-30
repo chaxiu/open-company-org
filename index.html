@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <!-- Generated from spec/zh.md and spec/en.md. Edit those files, then run node build.mjs. -->
-<html lang="zh-Hans" data-lang="zh">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Open Company 规范</title>
-  <meta name="description" content="Open Company 规范 v0（多 Agent 协作的开放标准）：用一套纯文本目录定义目标、产品、分工与排班。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。">
+  <title>Open Company Specification</title>
+  <meta name="description" content="Open Company Specification v0 (an open standard for multi-agent collaboration): define goals, products, roles, and schedules in a plain-text directory.">
   <link rel="stylesheet" href="styles.css?v=6">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -14,9 +14,14 @@
     (function () {
       var saved = null;
       try { saved = localStorage.getItem("open-company-lang"); } catch (e) {}
+      var browserLang = (
+        (navigator.languages && navigator.languages[0]) ||
+        navigator.language ||
+        ""
+      ).toLowerCase();
       var lang = saved === "en" || saved === "zh"
         ? saved
-        : (navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en";
+        : browserLang.indexOf("zh") === 0 ? "zh" : "en";
       document.documentElement.dataset.lang = lang;
       document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
     })();
@@ -36,8 +41,8 @@
         <a href="https://munk.sh">Munk AI</a>
       </nav>
       <div class="lang-switch" role="group" aria-label="Language">
-        <button type="button" data-set-lang="zh" aria-pressed="true">中文</button>
-        <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-set-lang="zh" aria-pressed="false">中文</button>
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
       </div>
     </div>
   </header>
@@ -759,7 +764,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
       var KEY = "open-company-lang";
       var copy = {"zh":{"title":"Open Company 规范","description":"Open Company 规范 v0（多 Agent 协作的开放标准）：用一套纯文本目录定义目标、产品、分工与排班。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。"},"en":{"title":"Open Company Specification","description":"Open Company Specification v0 (an open standard for multi-agent collaboration): define goals, products, roles, and schedules in a plain-text directory."}};
       function apply(lang) {
-        var page = copy[lang] || copy.zh;
+        var page = copy[lang] || copy.en;
         document.documentElement.dataset.lang = lang;
         document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
         document.title = page.title;
@@ -769,7 +774,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
           button.setAttribute("aria-pressed", button.getAttribute("data-set-lang") === lang ? "true" : "false");
         });
       }
-      apply(document.documentElement.dataset.lang === "en" ? "en" : "zh");
+      apply(document.documentElement.dataset.lang === "zh" ? "zh" : "en");
       document.querySelectorAll("[data-set-lang]").forEach(function (button) {
         button.addEventListener("click", function () {
           var lang = button.getAttribute("data-set-lang");

@@ -380,12 +380,12 @@ function renderPage(zh, en) {
   });
   return `<!DOCTYPE html>
 <!-- Generated from spec/zh.md and spec/en.md. Edit those files, then run node build.mjs. -->
-<html lang="zh-Hans" data-lang="zh">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${esc(zh.data.title)}</title>
-  <meta name="description" content="${esc(zh.data.description)}">
+  <title>${esc(en.data.title)}</title>
+  <meta name="description" content="${esc(en.data.description)}">
   <link rel="stylesheet" href="styles.css?v=6">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -394,9 +394,14 @@ function renderPage(zh, en) {
     (function () {
       var saved = null;
       try { saved = localStorage.getItem("open-company-lang"); } catch (e) {}
+      var browserLang = (
+        (navigator.languages && navigator.languages[0]) ||
+        navigator.language ||
+        ""
+      ).toLowerCase();
       var lang = saved === "en" || saved === "zh"
         ? saved
-        : (navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en";
+        : browserLang.indexOf("zh") === 0 ? "zh" : "en";
       document.documentElement.dataset.lang = lang;
       document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
     })();
@@ -416,8 +421,8 @@ function renderPage(zh, en) {
         <a href="https://munk.sh">Munk AI</a>
       </nav>
       <div class="lang-switch" role="group" aria-label="Language">
-        <button type="button" data-set-lang="zh" aria-pressed="true">中文</button>
-        <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-set-lang="zh" aria-pressed="false">中文</button>
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
       </div>
     </div>
   </header>
@@ -439,7 +444,7 @@ function renderPage(zh, en) {
       var KEY = "open-company-lang";
       var copy = ${copy};
       function apply(lang) {
-        var page = copy[lang] || copy.zh;
+        var page = copy[lang] || copy.en;
         document.documentElement.dataset.lang = lang;
         document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
         document.title = page.title;
@@ -449,7 +454,7 @@ function renderPage(zh, en) {
           button.setAttribute("aria-pressed", button.getAttribute("data-set-lang") === lang ? "true" : "false");
         });
       }
-      apply(document.documentElement.dataset.lang === "en" ? "en" : "zh");
+      apply(document.documentElement.dataset.lang === "zh" ? "zh" : "en");
       document.querySelectorAll("[data-set-lang]").forEach(function (button) {
         button.addEventListener("click", function () {
           var lang = button.getAttribute("data-set-lang");
