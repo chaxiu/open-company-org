@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Open Company 规范</title>
-  <meta name="description" content="Open Company 规范 v0：把一家公司写成一个目录。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。">
+  <meta name="description" content="Open Company 规范 v0（多 Agent 协作的开放标准）：用一套纯文本目录定义目标、产品、分工与排班。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。">
   <link rel="stylesheet" href="styles.css?v=6">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -47,7 +47,7 @@
     <h1>Open Company 规范</h1>
     <dl class="meta">
       <dt>版本</dt><dd><code>open-company/v0</code>，实验版本</dd>
-      <dt>修订</dt><dd>2026-10-10</dd>
+      <dt>修订</dt><dd>2026-10-30</dd>
       <dt>Schema</dt><dd><a href="schema/v0/companyfile.json"><code>companyfile.json</code></a> · <a href="schema/v0/productfile.json"><code>productfile.json</code></a></dd>
     </dl>
     <p><strong>状态。</strong>v0 是实验版本。已发布字段的含义和 Schema 地址保持不变。实验期内可以增加可选字段，并记在文首的修订日期里。不兼容的修改将作为 v1 发布，使用新的 <code>spec</code> 值和新的 Schema 地址。</p>
@@ -71,7 +71,7 @@
       </ol>
     </nav>
     <h2 id="summary">1. 摘要<a class="anchor" href="#summary" aria-hidden="true">§</a></h2>
-    <p>Open Company 把一家公司写成一个目录。目录里有公司和产品的声明、给 Agent 的工作说明、按日程运行的任务，以及负责具体工作的 Agent。实现了本规范的运行时读取这个目录，替这家公司做研发和运营。</p>
+    <p>Open Company 是多 Agent 协作的开放标准，把一家公司写成一个纯文本目录。目录里有公司和产品的声明、给 Agent 的工作说明、按日程运行的任务，以及负责具体工作的 Agent。实现了本规范的运行时读取这个目录，替这家公司协同执行研发和运营。</p>
     <p>本规范规定这个目录的布局、其中每类文件的写法，以及运行时导入它时必须做什么。</p>
     <h2 id="scope">2. 范围<a class="anchor" href="#scope" aria-hidden="true">§</a></h2>
     <p>本规范规定：</p>
@@ -391,7 +391,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     </ul>
     <p>Schema 只检查单个文件的形状，有三点检查不到：长度不先去掉首尾空白再计算；不检查 <code>id</code> 是否等于目录名；不检查跨字段、跨文件的引用。这些由运行时在导入时检查（见第 11 节第 1 步）。任务文件和 Agent 文件在 v0 没有单独的 Schema，以第 8、9 节为准。</p>
     <h2 id="sites">13. 相关站点<a class="anchor" href="#sites" aria-hidden="true">§</a></h2>
-    <p><a href="https://opencompany.run">opencompany.run</a> 收录符合本规范的公司包，供人导入。尚未上线。</p>
+    <p><a href="https://opencompany.run">opencompany.run</a>（源码与模板库：<a href="https://github.com/munk-sh/open-company">munk-sh/open-company</a>）收录符合本规范的公司包，供人直接复制或一键导入运行。</p>
     <p><a href="https://munk.sh">Munk AI</a> 是一个实现了本规范的运行时。</p>
   </article>
 
@@ -399,7 +399,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     <h1>Open Company Specification</h1>
     <dl class="meta">
       <dt>Version</dt><dd><code>open-company/v0</code>, experimental</dd>
-      <dt>Revised</dt><dd>2026-10-10</dd>
+      <dt>Revised</dt><dd>2026-10-30</dd>
       <dt>Schema</dt><dd><a href="schema/v0/companyfile.json"><code>companyfile.json</code></a> · <a href="schema/v0/productfile.json"><code>productfile.json</code></a></dd>
     </dl>
     <p><strong>Status.</strong> v0 is experimental. The meaning of a published field and the schema URLs stay the same. Optional fields may be added while v0 is experimental, and are recorded in the revised date at the top. Incompatible changes will ship as v1, with a new <code>spec</code> value and new schema URLs.</p>
@@ -423,7 +423,7 @@ console.log(`${reviews.length} new reviews`);</code></pre>
       </ol>
     </nav>
     <h2 id="summary-en">1. Summary<a class="anchor" href="#summary-en" aria-hidden="true">§</a></h2>
-    <p>Open Company describes a company as a directory. The directory holds declarations for the company and its products, instructions for agents, tasks that run on a schedule, and the agents that do the work. A runtime that implements this specification reads the directory and runs engineering and operations for the company.</p>
+    <p>Open Company is an open standard for multi-agent collaboration that describes a company as a plain-text directory. The directory holds declarations for the company and its products, instructions for agents, tasks that run on a schedule, and the agents that do the work. A runtime that implements this specification reads the directory and coordinates engineering and operations for the company.</p>
     <p>This specification defines the layout of that directory, how each kind of file in it is written, and what a runtime must do when it imports one.</p>
     <h2 id="scope-en">2. Scope<a class="anchor" href="#scope-en" aria-hidden="true">§</a></h2>
     <p>This specification defines:</p>
@@ -743,21 +743,21 @@ console.log(`${reviews.length} new reviews`);</code></pre>
     </ul>
     <p>The schemas check the shape of one file at a time and cannot check three things: they measure length without trimming first; they do not check that an <code>id</code> equals its directory name; and they do not check references across fields or files. A runtime checks these at import (section 11, step 1). Task files and agent files have no separate schema in v0; sections 8 and 9 are authoritative.</p>
     <h2 id="sites-en">13. Related sites<a class="anchor" href="#sites-en" aria-hidden="true">§</a></h2>
-    <p><a href="https://opencompany.run">opencompany.run</a> collects company packages that conform to this specification, for others to import. Not yet live.</p>
+    <p><a href="https://opencompany.run">opencompany.run</a> (template repository: <a href="https://github.com/munk-sh/open-company">munk-sh/open-company</a>) collects company packages that conform to this specification, ready to fork or import in one click.</p>
     <p><a href="https://munk.sh">Munk AI</a> is a runtime that implements this specification.</p>
   </article>
   </main>
 
   <footer>
     <div class="foot">
-      <p>Open Company · <code>open-company/v0</code> · 2026-10-10</p>
+      <p>Open Company · <code>open-company/v0</code> · 2026-10-30</p>
     </div>
   </footer>
 
   <script>
     (function () {
       var KEY = "open-company-lang";
-      var copy = {"zh":{"title":"Open Company 规范","description":"Open Company 规范 v0：把一家公司写成一个目录。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。"},"en":{"title":"Open Company Specification","description":"Open Company Specification v0: a company written as a directory. Layout, Companyfile.yaml, Productfile.yaml, task and agent files, and import."}};
+      var copy = {"zh":{"title":"Open Company 规范","description":"Open Company 规范 v0（多 Agent 协作的开放标准）：用一套纯文本目录定义目标、产品、分工与排班。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。"},"en":{"title":"Open Company Specification","description":"Open Company Specification v0 (an open standard for multi-agent collaboration): define goals, products, roles, and schedules in a plain-text directory."}};
       function apply(lang) {
         var page = copy[lang] || copy.zh;
         document.documentElement.dataset.lang = lang;

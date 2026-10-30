@@ -7,13 +7,13 @@
 
 ---
 title: "Open Company 规范"
-description: "Open Company 规范 v0：把一家公司写成一个目录。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。"
+description: "Open Company 规范 v0（多 Agent 协作的开放标准）：用一套纯文本目录定义目标、产品、分工与排班。目录布局、Companyfile.yaml、Productfile.yaml、任务与 Agent 文件，以及导入。"
 toc: "目录"
 spec: open-company/v0
 versionLabel: "版本"
 version: "`open-company/v0`，实验版本"
 revisedLabel: "修订"
-revised: "2026-10-10"
+revised: "2026-10-30"
 schemaLabel: "Schema"
 ---
 
@@ -25,7 +25,7 @@ schemaLabel: "Schema"
 
 ## 1. 摘要
 
-Open Company 把一家公司写成一个目录。目录里有公司和产品的声明、给 Agent 的工作说明、按日程运行的任务，以及负责具体工作的 Agent。实现了本规范的运行时读取这个目录，替这家公司做研发和运营。
+Open Company 是多 Agent 协作的开放标准，把一家公司写成一个纯文本目录。目录里有公司和产品的声明、给 Agent 的工作说明、按日程运行的任务，以及负责具体工作的 Agent。实现了本规范的运行时读取这个目录，替这家公司协同执行研发和运营。
 
 本规范规定这个目录的布局、其中每类文件的写法，以及运行时导入它时必须做什么。
 
@@ -457,6 +457,6 @@ Schema 只检查单个文件的形状，有三点检查不到：长度不先去�
 
 ## 13. 相关站点
 
-[opencompany.run](https://opencompany.run) 收录符合本规范的公司包，供人导入。尚未上线。
+[opencompany.run](https://opencompany.run)（源码与模板库：[munk-sh/open-company](https://github.com/munk-sh/open-company)）收录符合本规范的公司包，供人直接复制或一键导入运行。
 
 [Munk AI](https://munk.sh) 是一个实现了本规范的运行时。

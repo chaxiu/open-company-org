@@ -7,13 +7,13 @@ A blockquote immediately before a code block is the example label. Write "Name �
 
 ---
 title: "Open Company Specification"
-description: "Open Company Specification v0: a company written as a directory. Layout, Companyfile.yaml, Productfile.yaml, task and agent files, and import."
+description: "Open Company Specification v0 (an open standard for multi-agent collaboration): define goals, products, roles, and schedules in a plain-text directory."
 toc: "Contents"
 spec: open-company/v0
 versionLabel: "Version"
 version: "`open-company/v0`, experimental"
 revisedLabel: "Revised"
-revised: "2026-10-10"
+revised: "2026-10-30"
 schemaLabel: "Schema"
 ---
 
@@ -25,7 +25,7 @@ In this document, “must” means without exception, “must not” means forbi
 
 ## 1. Summary
 
-Open Company describes a company as a directory. The directory holds declarations for the company and its products, instructions for agents, tasks that run on a schedule, and the agents that do the work. A runtime that implements this specification reads the directory and runs engineering and operations for the company.
+Open Company is an open standard for multi-agent collaboration that describes a company as a plain-text directory. The directory holds declarations for the company and its products, instructions for agents, tasks that run on a schedule, and the agents that do the work. A runtime that implements this specification reads the directory and coordinates engineering and operations for the company.
 
 This specification defines the layout of that directory, how each kind of file in it is written, and what a runtime must do when it imports one.
 
@@ -457,6 +457,6 @@ The schemas check the shape of one file at a time and cannot check three things:
 
 ## 13. Related sites
 
-[opencompany.run](https://opencompany.run) collects company packages that conform to this specification, for others to import. Not yet live.
+[opencompany.run](https://opencompany.run) (template repository: [munk-sh/open-company](https://github.com/munk-sh/open-company)) collects company packages that conform to this specification, ready to fork or import in one click.
 
 [Munk AI](https://munk.sh) is a runtime that implements this specification.
